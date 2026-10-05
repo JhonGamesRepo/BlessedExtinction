@@ -1,4 +1,4 @@
-# Blessed Extinction — Landing v2 · Paleta unificada
+# Blessed Extinction — Landing v2 · Paleta unificada.
 
 Mismo diseño, contenido y JavaScript que `../landingBlessedExtinction/`. Lo único que cambia es la paleta: toda la página usa los tonos del single **Incorruptible Cadavérico**.
 
