@@ -20,6 +20,15 @@ Sólo se envía texto. Cada conversación tiene **número consecutivo, nombre y 
 
 > Base creada antes de los nombres: aplicar una vez `npx wrangler d1 execute blessed-chat --remote --file=migrations/001-nombre-y-numero.sql`.
 
+## Tienda: «Quiero que vuelva»
+
+Cuando un producto está agotado, la página envía `POST /vote` con el producto, el color y la talla. El Worker lo guarda en la tabla `votes` y publica en el grupo:
+`🗳️ Quieren que vuelva · hoodie · talla L · Votos: 7 (3 en talla L)`. Escribe **`/votos`** en el grupo para ver el ranking.
+
+- Se acepta un voto por producto y navegador, con un máximo de 20 votos por IP y día. Sólo se aceptan identificadores cortos (`a-z0-9-`) y tallas conocidas, así que nadie puede usar el voto para mandar texto libre al grupo.
+- Los votos se guardan 180 días.
+- **Base creada antes de la tienda:** `npm run db:votes` (aplica `migrations/002-votos.sql`). Hazlo **antes** de desplegar el Worker nuevo: la limpieza diaria también borra los votos viejos y fallaría sin la tabla.
+
 ## Seguridad
 
 | Riesgo | Medida |

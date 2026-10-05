@@ -1,4 +1,4 @@
-# Blessed Extinction — Landing v2 · Paleta unificada
+# Blessed Extinction — Landing v2 · Paleta unificada.
 
 Mismo diseño, contenido y JavaScript que `../landingBlessedExtinction/`. Lo único que cambia es la paleta: toda la página usa los tonos del single **Incorruptible Cadavérico**.
 
@@ -37,6 +37,73 @@ El diseño anterior de esta carpeta (concepto «Brutalismo industrial») quedó 
 ## Minijuego «El Péndulo»
 
 Se abre desde el enlace bajo «Sin fechas anunciadas» (Tour) y desde el botón «Minijuego» del pie. Va en un `<dialog>` a pantalla completa en móvil. El jugador detiene el péndulo en la zona dorada; cada acierto acelera el péndulo y achica la zona, un acierto en el centro vale 2 puntos y con 3 fallos se acaba la partida. El récord queda guardado en el navegador. Al terminar aparecen los enlaces de `GAME_LINKS` en `js/main.js` (YouTube y Spotify; hay una línea comentada para añadir la tienda de merch).
+
+## Tienda
+
+Sección `#tienda` entre «La Banda» y «Tour», con la camiseta (tres colores de logo), el hoodie y el CD. Todo se edita en `index.html` (hay un comentario encima de la sección):
+
+- **Precio:** el texto de `.product__price`.
+- **Agotado:** `data-soldout` en el `<article>` (todo el producto) o en un botón de color o talla. La foto se apaga con el sello «Sold Out» y el botón «Pedir por correo» se cambia por «🔔 Quiero que vuelva».
+- **Pedir por correo:** abre el correo del visitante dirigido a `CONTACT_MAIL` (`js/main.js`), con el asunto y el pedido escritos (producto · color · talla). La talla es obligatoria si el producto tiene tallas. Debajo se muestra la dirección, por si el visitante no tiene programa de correo configurado.
+- **Votos:** van al Worker (`POST /vote`), que los guarda en D1 y avisa al grupo de Telegram. En el grupo, `/votos` muestra el ranking con el reparto por talla. Un voto por producto y navegador. Tras votar, el fan puede pedir por correo que le avisen cuando vuelva.
+- **Mockup de la camiseta:** silueta SVG con el arte encima. La tela (`#1d1917`) es apenas más clara que el fondo de los JPG (`rgb(17,13,12)`) y el arte usa `mix-blend-mode: lighten`, así que el recuadro negro desaparece. Un arte nuevo necesita ese mismo fondo (o más oscuro).
+- **Colores del hoodie:** sólo hay foto en verde. El rojo y el azul se simulan girando el tono de esa foto (`data-hue` en grados y `data-sat` para avivar el color). Los negros y grises no cambian. Si hay fotos reales, cambia `data-hue` por `data-img="img/merch/hoodie-rojo.jpg"` en el botón del color.
+- `data-product` y `data-variant` son los nombres que ve la banda en Telegram: minúsculas, números y guiones.
+
+### Ver los votos «Quiero que vuelva»
+
+El Worker con votos está publicado en Cloudflare desde el 4 de octubre de 2026, y la tabla `votes` ya existe en la base de producción. Para que el botón de votar funcione, la página también tiene que estar subida a GitHub Pages.
+
+**1. Cada voto llega al grupo de Telegram** «Blessed Extinction · Web», enviado por el bot:
+
+```
+🗳️ Quieren que vuelva
+hoodie/logo-rojo · talla L
+Votos: 7 (3 en talla L) · ES
+/votos → ranking
+```
+
+- `hoodie/logo-rojo` es el producto y el color (`data-product` / `data-variant`). Si el producto no tiene colores, sale sólo el producto, por ejemplo `cd-venganza-natural`.
+- `Votos` es el total de ese producto y color. Entre paréntesis, cuántos votos son de la talla elegida.
+- `ES` / `EN` es el idioma en que el fan veía la página.
+- Si alguien vuelve a votar por el mismo producto desde el mismo navegador, no llega otro mensaje.
+
+**2. Ranking en cualquier momento:** escribe `/votos` en el grupo (o `/votos@UsuarioDelBot`). El bot responde con los productos ordenados de más a menos pedidos:
+
+```
+🗳️ Quieren que vuelva (últimos 180 días)
+
+1. hoodie/logo-rojo — 7 (L×3, M×2, sin talla×2)
+2. camiseta/logo-azul — 4 (M×4)
+```
+
+«sin talla» son votos de fans que no eligieron talla antes de votar.
+
+**3. Probar que funciona:** abre la web publicada, ve a la Tienda, elige un producto agotado (sello «Sold Out»), pulsa «🔔 Quiero que vuelva» y revisa que llegue el mensaje al grupo. Para borrar ese voto de prueba, mira el paso 5.
+
+**4. Si no llega nada:**
+
+| Síntoma | Causa probable |
+|---|---|
+| En la web sale «No se pudo registrar el voto» | La página no está publicada en `https://jhongamesrepo.github.io` (el Worker sólo acepta ese origen) o el Worker está caído. |
+| El botón dice «✓ Voto anotado» pero no llega mensaje | Ese navegador ya había votado por ese producto. Prueba desde otro navegador o en una ventana privada. |
+| `/votos` no responde | El bot sólo atiende el grupo configurado en `CHAT_ID`. Si el grupo se convirtió en supergrupo, el id cambió (ver la guía en `chat-worker-blessed/README.md`). |
+
+**5. Consultar o limpiar los votos en la base** (Cloudflare → Storage & Databases → D1 → `blessed-chat` → Console, o con wrangler desde `chat-worker-blessed/`):
+
+```sql
+-- Todos los votos, del más reciente al más antiguo
+SELECT item, size, datetime(ts / 1000, 'unixepoch') AS fecha FROM votes ORDER BY ts DESC;
+
+-- Reiniciar el conteo de un producto cuando vuelva a tener stock
+DELETE FROM votes WHERE item = 'hoodie/logo-rojo';
+```
+
+Con wrangler: `npx wrangler d1 execute blessed-chat --remote --command "SELECT item, size, COUNT(*) FROM votes GROUP BY item, size"`.
+
+Los votos se borran solos a los 180 días.
+
+**6. Si cambias el Worker** (`chat-worker-blessed/src/index.js`), publícalo con `npm run deploy` desde `chat-worker-blessed/`. La tabla `votes` ya existe: no hay que volver a ejecutar `npm run db:votes`.
 
 ## Chat con la banda (Telegram)
 

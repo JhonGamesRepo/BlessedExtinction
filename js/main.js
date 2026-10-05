@@ -19,6 +19,7 @@
     'nav.videos': 'Videos',
     'nav.listen': 'Listen',
     'nav.band': 'Band',
+    'nav.store': 'Store',
     'nav.tour': 'Shows',
     'nav.contact': 'Contact',
     'hero.kicker': 'New single',
@@ -106,6 +107,34 @@
     'chat.rate': 'Too many messages in a row. Wait a few minutes.',
     'chat.captcha': 'Verification failed. Try again.',
     'chat.offline': 'The chat isn’t available yet.',
+    'store.title': 'Store',
+    'store.lead': 'Official band merch. Order by email and we’ll reply to sort out payment and shipping.',
+    'store.soldout': 'Sold Out',
+    'store.teeName': 'Blessed Extinction T-shirt',
+    'store.teeDesc': 'Black with a front print. Pick the logo color.',
+    'store.hoodieName': 'Zip hoodie',
+    'store.hoodieDesc': 'Black, front logo and full back print.',
+    'store.hoodieAlt': 'Black zip hoodie: logo on the front, skulls and logo on the back',    'store.cdName': 'Venganza Natural CD',
+    'store.cdDesc': 'The EP on physical format.',
+    'store.cdAlt': 'Venganza Natural EP on CD',
+    'store.color': 'Logo color',
+    'store.green': 'Green logo',
+    'store.red': 'Red logo',
+    'store.blue': 'Blue logo',
+    'store.sizes': 'Size',
+    'store.size': 'Size',
+    'store.order': 'Order by email',
+    'store.vote': '🔔 I want it back',
+    'store.voted': '✓ Vote counted',
+    'store.notify': 'Email me when it’s back',
+    'store.pickSize': 'Pick a size first.',
+    'store.votedText': 'The band already knows. Want us to tell you when it’s back?',
+    'store.voteError': 'Couldn’t save your vote. Try again later.',
+    'store.orderMsg': 'Hi! I’d like to order: {item}. How do I pay and get it shipped?',
+    'store.notifyMsg': 'Hi! Let me know when this is back: {item}.',
+    'store.orderSubject': 'Merch order',
+    'store.notifySubject': 'Let me know when it’s back',
+    'store.mailHint': 'If your email app didn’t open, write to us at jhonblessedextinction@gmail.com',
   };
 
   // Textos en español que sólo genera el JS (no están en el HTML)
@@ -122,6 +151,16 @@
     'chat.rate': 'Demasiados mensajes seguidos. Espera unos minutos.',
     'chat.captcha': 'No se pudo verificar. Inténtalo de nuevo.',
     'chat.offline': 'El chat aún no está disponible.',
+    'store.size': 'Talla',
+    'store.voted': '✓ Voto anotado',
+    'store.pickSize': 'Primero elige una talla.',
+    'store.votedText': 'La banda ya se enteró. ¿Quieres que te avisemos cuando vuelva?',
+    'store.voteError': 'No se pudo registrar el voto. Inténtalo más tarde.',
+    'store.orderMsg': '¡Hola! Quiero pedir: {item}. ¿Cómo hago el pago y el envío?',
+    'store.notifyMsg': '¡Hola! Avísenme cuando vuelva: {item}.',
+    'store.orderSubject': 'Pedido de merch',
+    'store.notifySubject': 'Avísenme cuando vuelva',
+    'store.mailHint': 'Si no se abrió tu correo, escríbenos a jhonblessedextinction@gmail.com',
   };
 
   const LANG_KEY = 'be-lang';
@@ -878,11 +917,11 @@
 
   // ----- Minijuego: El Péndulo -----
   // Detener el péndulo dentro de la zona dorada. Cada acierto lo acelera y achica la
-  // zona; tres fallos terminan la partida. Al final, enlaces a YouTube, Spotify o merch.
+  // zona; tres fallos terminan la partida. Al final, enlaces a YouTube, Spotify y la tienda.
   const GAME_LINKS = [
     { key: 'game.youtube', href: 'https://www.youtube.com/@BlessedExtinction', primary: true },
     { key: 'game.spotify', href: 'https://open.spotify.com/artist/5pcjzTYxRRCxWtVyOKMhJ0' },
-    // { key: 'game.merch', href: 'https://URL-DE-LA-TIENDA' },
+    { key: 'game.merch', href: '#tienda' }, // enlace interno: cierra el juego y baja a la tienda
   ];
   (() => {
     const dlg = document.getElementById('game');
@@ -1022,8 +1061,12 @@
           const a = document.createElement('a');
           a.className = `btn btn--sm ${primary ? 'btn--primary' : 'btn--ghost'}`;
           a.href = href;
-          a.target = '_blank';
-          a.rel = 'noopener';
+          if (href.startsWith('#')) {
+            a.addEventListener('click', () => dlg.close());
+          } else {
+            a.target = '_blank';
+            a.rel = 'noopener';
+          }
           a.textContent = tr(key);
           return a;
         }));
@@ -1098,6 +1141,10 @@
   // el token del bot nunca llega al navegador. TURNSTILE_SITEKEY es pública.
   const CHAT_API = 'https://blessed-chat.blessed-chat.workers.dev';
   const TURNSTILE_SITEKEY = '0x4AAAAAAFNvAufF8maHmmyH'; // clave de sitio de Cloudflare Turnstile (pública)
+  // En localhost se usa siempre el Worker local (npm run dev): el de producción sólo acepta
+  // peticiones desde la web publicada. Abierta como archivo (file://) no hay Worker.
+  const devServer = ['localhost', '127.0.0.1'].includes(location.hostname);
+  const WORKER_API = location.protocol === 'file:' ? '' : devServer ? 'http://127.0.0.1:8787' : CHAT_API;
   (() => {
     const fab = document.getElementById('chatFab');
     const panel = document.getElementById('chatPanel');
@@ -1107,13 +1154,10 @@
     const sendBtn = document.getElementById('chatSend');
     const dot = document.getElementById('chatDot');
     const nameInput = document.getElementById('chatName');
-    // Abierta como archivo (file://) no puede hablar con ningún Worker: sin chat
-    if (location.protocol === 'file:') return;
-    const devServer = ['localhost', '127.0.0.1'].includes(location.hostname);
-    if (!CHAT_API && !devServer) return;
-    // En localhost usa siempre el Worker local (npm run dev) y la clave de prueba de Turnstile;
-    // el Worker de producción sólo acepta peticiones desde la web publicada
-    const api = devServer ? 'http://127.0.0.1:8787' : CHAT_API;
+    // Sin Worker (archivo local o CHAT_API vacío) no hay chat
+    if (!WORKER_API) return;
+    const api = WORKER_API;
+    // En localhost, la clave de prueba de Turnstile
     const sitekey = devServer ? '1x00000000000000000000AA' : TURNSTILE_SITEKEY;
     fab.hidden = false;
 
@@ -1323,6 +1367,146 @@
 
     // Visitante que vuelve: comprobar si la banda respondió mientras no estaba
     if (sid) setTimeout(() => poll().then(schedule), 3000);
+  })();
+
+  // ----- Tienda -----
+  // Agotado = data-soldout en el producto, o en el color o la talla elegidos. Entonces la
+  // foto muestra «Sold Out» y en vez de pedir se vota «Quiero que vuelva»: el voto va al
+  // Worker, que lo guarda y avisa al grupo de Telegram (/votos muestra el ranking).
+  (() => {
+    const CONTACT_MAIL = 'jhonblessedextinction@gmail.com'; // los pedidos llegan a este correo
+    const VOTER_KEY = 'be-voter';
+    const VOTES_KEY = 'be-votes';
+    const store = {
+      get: (k) => { try { return localStorage.getItem(k); } catch (_) { return null; } },
+      set: (k, v) => { try { localStorage.setItem(k, v); } catch (_) { /* almacenamiento no disponible */ } },
+    };
+    let voted = [];
+    try { voted = JSON.parse(store.get(VOTES_KEY)) || []; } catch (_) { /* valor dañado */ }
+    // Identificador anónimo de este navegador: el Worker cuenta un voto por producto y persona
+    let voter = store.get(VOTER_KEY);
+    if (!/^[A-Za-z0-9_-]{16,64}$/.test(voter || '')) {
+      voter = Array.from(crypto.getRandomValues(new Uint8Array(18)), (b) => b.toString(16).padStart(2, '0')).join('');
+      store.set(VOTER_KEY, voter);
+    }
+
+    // Abre el correo del visitante con el pedido ya escrito
+    const toMail = (subject, body) => {
+      location.href = `mailto:${CONTACT_MAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    };
+
+    document.querySelectorAll('.product').forEach((card) => {
+      const print = card.querySelector('[data-print]');
+      const orderBtn = card.querySelector('[data-order]');
+      const voteBtn = card.querySelector('[data-vote]');
+      const hint = card.querySelector('.product__hint');
+      const notifyBtn = card.querySelector('[data-notify]');
+      const sizeGroup = card.querySelector('[data-opt="size"]');
+      const picked = (opt) => card.querySelector(`[data-opt="${opt}"] [aria-pressed="true"]`);
+
+      // Los avisos se guardan como clave (data-i18n) para que sigan el cambio de idioma
+      const say = (key, isError = false) => {
+        hint.dataset.i18n = key;
+        hint.textContent = key === 'store.hintNone' ? '' : tr(key);
+        hint.classList.toggle('is-error', isError);
+      };
+      const item = () => {
+        const variant = picked('variant');
+        const size = picked('size');
+        return {
+          product: card.dataset.product,
+          variant: variant?.dataset.variant || '',
+          size: size?.textContent.trim() || '',
+          label: [
+            card.querySelector('.product__name').textContent.trim(),
+            variant?.getAttribute('aria-label'),
+            size && `${tr('store.size')} ${size.textContent.trim()}`,
+          ].filter(Boolean).join(' · '),
+        };
+      };
+      const voteKey = () => {
+        const { product, variant } = item();
+        return variant ? `${product}/${variant}` : product;
+      };
+
+      const update = () => {
+        const soldout = [card, picked('variant'), picked('size')].some((el) => el?.hasAttribute('data-soldout'));
+        const hasVoted = voted.includes(voteKey());
+        card.classList.toggle('is-soldout', soldout);
+        orderBtn.hidden = soldout;
+        voteBtn.hidden = !soldout;
+        voteBtn.disabled = hasVoted;
+        voteBtn.dataset.i18n = hasVoted ? 'store.voted' : 'store.vote';
+        voteBtn.textContent = tr(voteBtn.dataset.i18n);
+        notifyBtn.hidden = !(soldout && hasVoted);
+        say(soldout && hasVoted ? 'store.votedText' : 'store.hintNone');
+      };
+
+      card.querySelectorAll('[data-opt]').forEach((group) =>
+        group.addEventListener('click', (e) => {
+          const btn = e.target.closest('button');
+          if (!btn) return;
+          group.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', b === btn));
+          // data-img cambia la foto (arte de la camiseta o foto real del color);
+          // data-hue gira el tono de la foto, para colores sin foto propia (hoodie)
+          if (btn.dataset.img) {
+            card.querySelectorAll('[data-print], [data-print-bg], [data-variant-img]').forEach((img) => { img.src = btn.dataset.img; });
+            if (print) print.alt = item().label;
+          }
+          if (group.dataset.opt === 'variant') {
+            card.style.setProperty('--hue', `${Number(btn.dataset.hue) || 0}deg`);
+            card.style.setProperty('--sat', Number(btn.dataset.sat) || 1);
+          }
+          update();
+        })
+      );
+
+      orderBtn.addEventListener('click', () => {
+        if (sizeGroup && !picked('size')) {
+          say('store.pickSize');
+          sizeGroup.classList.remove('is-asking');
+          void sizeGroup.offsetWidth; // reinicia la animación
+          sizeGroup.classList.add('is-asking');
+          sizeGroup.querySelector('button').focus();
+          return;
+        }
+        const { label } = item();
+        toMail(`${tr('store.orderSubject')} · ${label}`, tr('store.orderMsg').replace('{item}', label));
+        // Sin programa de correo configurado, el enlace no hace nada: se muestra la dirección
+        say('store.mailHint');
+      });
+
+      voteBtn.addEventListener('click', async () => {
+        const key = voteKey();
+        const { product, variant, size } = item();
+        voteBtn.disabled = true;
+        say('store.hintNone');
+        try {
+          if (!WORKER_API) throw new Error('offline');
+          const res = await fetch(`${WORKER_API}/vote`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ voter, product, variant, size, lang: currentLang }),
+          });
+          if (!res.ok) throw new Error('error');
+          if (!voted.includes(key)) voted.push(key);
+          store.set(VOTES_KEY, JSON.stringify(voted));
+          update();
+        } catch (_) {
+          voteBtn.disabled = false;
+          say('store.voteError', true);
+        }
+      });
+
+      notifyBtn.addEventListener('click', () => {
+        const { label } = item();
+        toMail(`${tr('store.notifySubject')} · ${label}`, tr('store.notifyMsg').replace('{item}', label));
+        say('store.mailHint');
+      });
+
+      if (print) print.alt = item().label;
+      update();
+    });
   })();
 
   document.getElementById('year').textContent = new Date().getFullYear();

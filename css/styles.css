@@ -2240,6 +2240,285 @@ ul {
     opacity: 0;
   }
 }
+/* ----- Tienda ----- */
+.store__lead {
+  max-width: 620px;
+  margin: -1rem auto 2.5rem;
+  text-align: center;
+  color: var(--c-ash);
+}
+.store__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+.product {
+  display: flex;
+  flex-direction: column;
+  background: var(--c-bg);
+  border: 1px solid var(--c-line);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.product:hover {
+  border-color: rgba(201, 162, 74, 0.45);
+  box-shadow: 0 0 28px rgba(201, 162, 74, 0.08);
+}
+.product__media {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 42%, #221a14, var(--c-bg) 72%);
+  border-bottom: 1px solid var(--c-line);
+}
+.product__media > :not(.product__stamp) {
+  transition: filter 0.4s ease, transform 0.6s ease;
+}
+.product:hover .product__media > :not(.product__stamp) {
+  transform: scale(1.03);
+}
+/* --crop recorta un margen extra por todos los lados (p. ej. el marco blanco del hoodie) */
+.product__img {
+  position: absolute;
+  top: calc(var(--crop, 0%) * -1);
+  left: calc(var(--crop, 0%) * -1);
+  width: calc(100% + 2 * var(--crop, 0%));
+  height: calc(100% + 2 * var(--crop, 0%));
+  max-width: none;
+  object-fit: cover;
+  object-position: var(--pos, center);
+  /* Color simulado (data-hue): sólo cambia lo que tiene color, no negros ni grises */
+  filter: hue-rotate(var(--hue, 0deg)) saturate(var(--sat, 1));
+}
+/* Agotado: foto apagada y sello encima */
+.product.is-soldout .product__media > :not(.product__stamp) {
+  filter: grayscale(0.85) brightness(0.5);
+}
+.product__stamp {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 0.45rem 1.3rem;
+  font-family: "Cinzel", serif;
+  font-weight: 900;
+  font-size: clamp(1.3rem, 3.2vw, 1.7rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--c-bone-light);
+  background: rgba(110, 26, 18, 0.82);
+  border: 2px solid var(--c-gold);
+  box-shadow: inset 0 0 0 3px rgba(13, 10, 8, 0.6), 0 6px 24px rgba(0, 0, 0, 0.6);
+  transform: translate(-50%, -50%) rotate(-12deg) scale(1.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.3, 1.6, 0.6, 1);
+}
+.product.is-soldout .product__stamp {
+  opacity: 1;
+  transform: translate(-50%, -50%) rotate(-12deg);
+}
+
+/* Mockup de camiseta: la tela es apenas más clara que el fondo del arte
+   (rgb 17,13,12), así que con "lighten" ese fondo desaparece y sólo queda
+   el estampado. La capa de sombras multiplica encima de tela y estampado. */
+/* Fondo de la camiseta: el arte ampliado (logo arriba y calaveras), como la
+   foto del hoodie. Se agranda con width/height y no con transform, para no
+   chocar con el zoom al pasar el cursor. */
+.tee-bg {
+  position: absolute;
+  top: -8%;
+  left: -40%;
+  width: 180%;
+  height: 180%;
+  max-width: none;
+  object-fit: cover;
+  opacity: 0.75;
+}
+.tee {
+  position: absolute;
+  inset: 6% 7% 4%;
+  isolation: isolate;
+}
+.tee__shirt,
+.tee__shade {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.tee__shirt {
+  filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.7));
+}
+.tee__body {
+  fill: #1d1917;
+}
+.tee__inside {
+  fill: #0e0c0b;
+}
+.tee__seams {
+  fill: none;
+  stroke: #2b2521;
+  stroke-width: 2;
+}
+.tee__print {
+  position: absolute;
+  top: 15.5%;
+  left: 50%;
+  width: 56%;
+  height: auto;
+  transform: translateX(-50%);
+  mix-blend-mode: lighten;
+}
+.tee__shade {
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.product__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  flex: 1;
+  padding: 1.4rem 1.3rem 1.5rem;
+}
+.product__name {
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: 0.05em;
+  line-height: 1.3;
+  color: var(--c-bone-light);
+}
+.product__desc {
+  margin-top: -0.5rem;
+  font-size: 0.92rem;
+  color: var(--c-ash);
+}
+.product__price {
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--c-gold-light);
+}
+.product__price small {
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  color: var(--c-ash);
+}
+.product__opts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.product__opts.is-asking {
+  animation: optsNudge 0.4s ease;
+}
+.swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--c-line);
+  background: radial-gradient(circle, var(--sw) 0 38%, #1d1917 42%);
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.swatch:hover {
+  border-color: var(--c-ash);
+}
+.swatch[aria-pressed="true"] {
+  border-color: var(--c-gold);
+  box-shadow: 0 0 0 2px var(--c-bg), 0 0 0 4px rgba(201, 162, 74, 0.45);
+}
+.size {
+  min-width: 2.7rem;
+  padding: 0.4rem 0.6rem;
+  font: 600 0.8rem "Inter", system-ui, sans-serif;
+  letter-spacing: 0.05em;
+  color: var(--c-text);
+  background: transparent;
+  border: 1px solid var(--c-line);
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+.size:hover {
+  border-color: var(--c-ash);
+  color: var(--c-bone-light);
+}
+.size[aria-pressed="true"] {
+  border-color: var(--c-gold);
+  color: var(--c-gold-light);
+  background: rgba(201, 162, 74, 0.1);
+}
+/* Talla o color agotado: se puede elegir igual (para votar por él) */
+.size[data-soldout] {
+  color: var(--c-ash);
+  text-decoration: line-through;
+}
+.swatch[data-soldout] {
+  opacity: 0.55;
+}
+.swatch:focus-visible,
+.size:focus-visible,
+.product__notify:focus-visible {
+  outline: 2px solid var(--c-bone-light);
+  outline-offset: 2px;
+}
+.product__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin-top: auto;
+  padding-top: 0.4rem;
+}
+.product__actions .btn {
+  width: 100%;
+}
+.product__actions .btn[hidden] {
+  display: none;
+}
+.product__actions .btn:disabled {
+  border-color: var(--c-line);
+  color: var(--c-gold-light);
+  cursor: default;
+  transform: none;
+  box-shadow: none;
+}
+.product__hint {
+  font-size: 0.85rem;
+  color: var(--c-text);
+}
+.product__hint:empty {
+  display: none;
+}
+.product__hint.is-error {
+  color: var(--c-ember);
+}
+.product__notify {
+  padding: 0;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--c-gold);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  cursor: pointer;
+}
+.product__notify:hover {
+  color: var(--c-gold-light);
+}
+.product__notify[hidden] {
+  display: none;
+}
+@keyframes optsNudge {
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
 @keyframes gatePulse {
   0%, 100% {
     box-shadow: 0 0 0 rgba(201, 162, 74, 0);
