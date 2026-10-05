@@ -5,13 +5,19 @@
 //
 //  POST /send      visitante → grupo de Telegram (el 1.er mensaje exige Turnstile)
 //  GET  /poll      visitante ← respuestas de la banda
+//  POST /vote      tienda: «Quiero que vuelva» → se guarda y avisa al grupo
 //  POST /telegram  webhook de Telegram (verificado con WEBHOOK_SECRET)
+//                  /votos en el grupo muestra el ranking de productos pedidos
 // =========================================================
 
 const MAX_LEN = 1000;              // caracteres por mensaje
 const SESSIONS_PER_IP_HOUR = 5;    // conversaciones nuevas por IP y hora
 const MSGS_PER_5_MIN = 8;          // mensajes por conversación cada 5 minutos
 const RETENTION_DAYS = 30;         // luego se borran solos (cron diario)
+const VOTES_PER_IP_DAY = 20;       // votos de la tienda por IP y día
+const VOTE_RETENTION_DAYS = 180;   // los votos cuentan (y se guardan) durante este tiempo
+const SLUG = /^[a-z0-9-]{1,32}$/;  // data-product / data-variant de la página
+const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
 const NAME_LEN = 40;               // caracteres del nombre del visitante
 // Un color por conversación para distinguirlas de un vistazo en el grupo
 const DOTS = ['🔴', '🟠', '🟡', '🟢', '🔵', '🟣', '🟤', '⚪'];
@@ -46,6 +52,7 @@ export default {
     try {
       if (url.pathname === '/send' && request.method === 'POST') return json(await onSend(request, env), 200, cors);
       if (url.pathname === '/poll' && request.method === 'GET') return json(await onPoll(url, env), 200, cors);
+      if (url.pathname === '/vote' && request.method === 'POST') return json(await onVote(request, env), 200, cors);
       return json({ error: 'not_found' }, 404, cors);
     } catch (err) {
       if (err instanceof ApiError) return json({ error: err.code }, err.status, cors);
@@ -61,6 +68,7 @@ export default {
       env.DB.prepare('DELETE FROM messages WHERE ts < ?').bind(cutoff),
       env.DB.prepare('DELETE FROM tg_map WHERE ts < ?').bind(cutoff),
       env.DB.prepare('DELETE FROM sessions WHERE last < ?').bind(cutoff),
+      env.DB.prepare('DELETE FROM votes WHERE ts < ?').bind(Date.now() - VOTE_RETENTION_DAYS * 86400e3),
     ]);
   },
 };
@@ -140,6 +148,72 @@ async function onPoll(url, env) {
   return { messages };
 }
 
+// ----- Tienda: «Quiero que vuelva» -----
+// Sin captcha para no frenar al fan: un voto por producto y navegador, y un tope por IP.
+// Sólo se aceptan identificadores cortos (minúsculas, números, guiones) y tallas conocidas,
+// así nadie puede usar el voto para mandar texto libre al grupo.
+async function onVote(request, env) {
+  const body = await request.json().catch(() => ({}));
+  const product = typeof body.product === 'string' ? body.product : '';
+  const variant = typeof body.variant === 'string' ? body.variant : '';
+  const size = typeof body.size === 'string' ? body.size : '';
+  const voter = typeof body.voter === 'string' ? body.voter : '';
+  if (!SLUG.test(product) || (variant && !SLUG.test(variant)) || (size && !SIZES.includes(size))) throw new ApiError('item', 400);
+  if (!/^[A-Za-z0-9_-]{16,64}$/.test(voter)) throw new ApiError('voter', 400);
+  const lang = body.lang === 'en' ? 'en' : 'es';
+  const item = variant ? `${product}/${variant}` : product;
+  const now = Date.now();
+
+  const ip = request.headers.get('CF-Connecting-IP') || '';
+  const ipHash = await sha256(`${env.WEBHOOK_SECRET}:${ip}`); // la IP no se guarda en claro
+  const { n: recent } = await env.DB.prepare('SELECT COUNT(*) AS n FROM votes WHERE ip_hash = ? AND ts > ?')
+    .bind(ipHash, now - 86400e3).first();
+  if (recent >= VOTES_PER_IP_DAY) throw new ApiError('rate', 429);
+
+  const res = await env.DB.prepare('INSERT OR IGNORE INTO votes (item, size, voter, ip_hash, ts) VALUES (?, ?, ?, ?, ?)')
+    .bind(item, size || null, await sha256(voter), ipHash, now).run();
+  if (!res.meta.changes) return { ok: true, already: true }; // ya había votado: no se avisa otra vez
+
+  const { total, sameSize } = await env.DB.prepare(
+    'SELECT COUNT(*) AS total, SUM(size IS ?) AS sameSize FROM votes WHERE item = ?'
+  ).bind(size || null, item).first();
+  const header = '🗳️ Quieren que vuelva';
+  const lines = [
+    `${item}${size ? ` · talla ${size}` : ''}`,
+    `Votos: ${total}${size ? ` (${sameSize} en talla ${size})` : ''} · ${lang.toUpperCase()}`,
+    '/votos → ranking',
+  ];
+  // Si Telegram falla el voto queda guardado igual (sale en /votos)
+  await tg(env, 'sendMessage', {
+    chat_id: env.CHAT_ID,
+    text: `${header}\n${lines.join('\n')}`,
+    entities: [{ type: 'bold', offset: 0, length: header.length }],
+  }).catch((err) => console.error(err));
+  return { ok: true };
+}
+
+// Ranking para el grupo: productos más pedidos y el reparto por talla
+async function votesReport(env) {
+  const { results } = await env.DB.prepare(
+    'SELECT item, size, COUNT(*) AS n FROM votes GROUP BY item, size'
+  ).all();
+  if (!results.length) return '🗳️ Aún no hay votos de «Quiero que vuelva».';
+  const items = new Map();
+  for (const { item, size, n } of results) {
+    const row = items.get(item) || { total: 0, sizes: [] };
+    row.total += n;
+    row.sizes.push([size || 'sin talla', n]);
+    items.set(item, row);
+  }
+  const lines = [...items]
+    .sort((a, b) => b[1].total - a[1].total)
+    .map(([item, { total, sizes }], k) => {
+      const detail = sizes.sort((a, b) => b[1] - a[1]).map(([s, n]) => `${s}×${n}`).join(', ');
+      return `${k + 1}. ${item} — ${total} (${detail})`;
+    });
+  return `🗳️ Quieren que vuelva (últimos ${VOTE_RETENTION_DAYS} días)\n\n${lines.join('\n')}`;
+}
+
 // ----- Telegram → visitante -----
 async function onTelegram(update, env) {
   const msg = update.message;
@@ -151,6 +225,11 @@ async function onTelegram(update, env) {
     return;
   }
   if (String(msg.chat.id) !== String(env.CHAT_ID)) return; // sólo el grupo de la banda
+
+  if (msg.text === '/votos' || msg.text?.startsWith('/votos@')) {
+    await tg(env, 'sendMessage', { chat_id: msg.chat.id, text: await votesReport(env) });
+    return;
+  }
 
   const replyTo = msg.reply_to_message?.message_id;
   const row = replyTo ? await env.DB.prepare('SELECT sid FROM tg_map WHERE tg_id = ?').bind(replyTo).first() : null;

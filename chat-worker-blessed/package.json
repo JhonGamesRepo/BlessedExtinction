@@ -8,7 +8,8 @@
     "deploy": "wrangler deploy",
     "db:init": "wrangler d1 execute blessed-chat --remote --file=schema.sql",
     "db:init:local": "wrangler d1 execute blessed-chat --local --file=schema.sql",
-    "db:reset:local": "wrangler d1 execute blessed-chat --local --command \"DELETE FROM messages; DELETE FROM sessions; DELETE FROM tg_map;\""
+    "db:reset:local": "wrangler d1 execute blessed-chat --local --command \"DELETE FROM messages; DELETE FROM sessions; DELETE FROM tg_map; DELETE FROM votes;\"",
+    "db:votes": "wrangler d1 execute blessed-chat --remote --file=migrations/002-votos.sql"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"
