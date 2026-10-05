@@ -81,6 +81,7 @@
           <li><a class="nav__link" href="#videos" data-i18n="nav.videos">Videos</a></li>
           <li><a class="nav__link" href="#escuchar" data-i18n="nav.listen">Escuchar</a></li>
           <li><a class="nav__link" href="#banda" data-i18n="nav.band">Banda</a></li>
+          <li><a class="nav__link" href="#tienda" data-i18n="nav.store">Tienda</a></li>
           <li><a class="nav__link" href="#tour" data-i18n="nav.tour">Tour</a></li>
           <li><a class="nav__link" href="#contacto" data-i18n="nav.contact">Contacto</a></li>
         </ul>
@@ -333,8 +334,132 @@
       </div>
     </section>
 
+    <!-- ===== TIENDA ===== -->
+    <!-- Cómo se edita:
+         · Agotado: añadir data-soldout al <article> (todo el producto) o a un botón de color o de talla.
+           La foto muestra «Sold Out» y el botón de pedir se cambia por «Quiero que vuelva».
+         · Precio: el texto de .product__price.
+         · «Pedir por correo» abre el correo del visitante con el pedido ya escrito (CONTACT_MAIL en js/main.js).
+         · Los votos llegan al grupo de Telegram; /votos en el grupo muestra el ranking.
+           data-product y data-variant son lo que ve la banda: minúsculas, números y guiones. -->
+    <section class="section section--dark store" id="tienda">
+      <div class="section__inner">
+        <h2 class="section__title" data-i18n="store.title">Tienda</h2>
+        <p class="store__lead" data-i18n="store.lead">Merch oficial de la banda. Haz tu pedido por correo y te respondemos para coordinar el pago y el envío.</p>
+
+        <div class="store__grid">
+          <article class="product" data-product="camiseta" data-soldout>
+            <div class="product__media">
+              <!-- Fondo: el mismo arte ampliado, como en la foto del hoodie -->
+              <img class="tee-bg" src="img/merch/artCamisetaVerde.jpg" alt="" width="1080" height="1080" loading="lazy" data-print-bg>
+              <div class="tee">
+                <svg class="tee__shirt" viewBox="0 0 600 640" aria-hidden="true">
+                  <path class="tee__inside" d="M222 42C250 28 350 28 378 42C360 100 240 100 222 42Z"/>
+                  <path class="tee__body" d="M222 42C240 100 360 100 378 42L470 70C500 80 522 94 535 110L592 222L512 262L470 188L476 598Q300 618 124 598L130 188L88 262L8 222L65 110C78 94 100 80 130 70Z"/>
+                  <g class="tee__seams">
+                    <path d="M222 42C240 100 360 100 378 42" stroke-width="12"/>
+                    <path d="M118 74Q142 130 130 188M482 74Q458 130 470 188M22 208L96 246M578 208L504 246M126 584Q300 604 474 584"/>
+                  </g>
+                </svg>
+                <img class="tee__print" src="img/merch/artCamisetaVerde.jpg" alt="Camiseta negra con el logo verde" width="1080" height="1080" loading="lazy" data-print>
+                <svg class="tee__shade" viewBox="0 0 600 640" aria-hidden="true">
+                  <defs>
+                    <radialGradient id="teeLight" cx="50%" cy="38%" r="65%">
+                      <stop offset="0" stop-color="#fff"/>
+                      <stop offset=".55" stop-color="#e6e6e6"/>
+                      <stop offset="1" stop-color="#8f8f8f"/>
+                    </radialGradient>
+                    <filter id="teeBlur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="9"/></filter>
+                  </defs>
+                  <path fill="url(#teeLight)" d="M222 42C240 100 360 100 378 42L470 70C500 80 522 94 535 110L592 222L512 262L470 188L476 598Q300 618 124 598L130 188L88 262L8 222L65 110C78 94 100 80 130 70Z"/>
+                  <g filter="url(#teeBlur)" stroke="#7a7a7a" stroke-width="16" fill="none" stroke-linecap="round" opacity=".55">
+                    <path d="M150 222Q205 262 228 340M450 222Q395 262 372 340M170 560Q215 535 258 578M342 578Q385 535 430 560M60 140Q90 190 100 236M540 140Q510 190 500 236"/>
+                  </g>
+                </svg>
+              </div>
+              <span class="product__stamp" data-i18n="store.soldout">Sold Out</span>
+            </div>
+            <div class="product__body">
+              <h3 class="product__name" data-i18n="store.teeName">Camiseta Blessed Extinction</h3>
+              <p class="product__desc" data-i18n="store.teeDesc">Negra con estampado frontal. Elige el color del logo.</p>
+              <p class="product__price">$45.000 <small>COP</small></p>
+              <div class="product__opts" data-opt="variant" role="group" aria-label="Color del logo" data-i18n-attr="aria-label:store.color">
+                <button class="swatch" type="button" aria-pressed="true" data-variant="logo-verde" data-img="img/merch/artCamisetaVerde.jpg" style="--sw: #86cf45" aria-label="Logo verde" data-i18n-attr="aria-label:store.green" title="Logo verde"></button>
+                <button class="swatch" type="button" aria-pressed="false" data-variant="logo-rojo" data-img="img/merch/artCamisetaRojo.jpg" style="--sw: #dd5a3c" aria-label="Logo rojo" data-i18n-attr="aria-label:store.red" title="Logo rojo"></button>
+                <button class="swatch" type="button" aria-pressed="false" data-variant="logo-azul" data-img="img/merch/artCamisetaAzul.jpg" style="--sw: #7183ec" aria-label="Logo azul" data-i18n-attr="aria-label:store.blue" title="Logo azul"></button>
+              </div>
+              <div class="product__opts" data-opt="size" role="group" aria-label="Talla" data-i18n-attr="aria-label:store.sizes">
+                <button class="size" type="button" aria-pressed="false">S</button>
+                <button class="size" type="button" aria-pressed="false">M</button>
+                <button class="size" type="button" aria-pressed="false">L</button>
+                <button class="size" type="button" aria-pressed="false">XL</button>
+                <button class="size" type="button" aria-pressed="false">XXL</button>
+              </div>
+              <div class="product__actions">
+                <button class="btn btn--primary btn--sm" type="button" data-order data-i18n="store.order">Pedir por correo</button>
+                <button class="btn btn--ghost btn--sm" type="button" data-vote data-i18n="store.vote" hidden>🔔 Quiero que vuelva</button>
+                <p class="product__hint" aria-live="polite" data-i18n="store.hintNone"></p>
+                <button class="product__notify" type="button" data-notify data-i18n="store.notify" hidden>Avísame por correo</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product" data-product="hoodie" >
+            <div class="product__media">
+              <img class="product__img" src="img/merch/hoodie.jpg" alt="Hoodie negro con cremallera: logo al frente y calaveras con el logo en la espalda" data-i18n-attr="alt:store.hoodieAlt" width="917" height="1280" loading="lazy" style="--pos: 50% 42%; --crop: 3%" data-variant-img>
+              <span class="product__stamp" data-i18n="store.soldout">Sold Out</span>
+            </div>
+            <div class="product__body">
+              <h3 class="product__name" data-i18n="store.hoodieName">Hoodie con cremallera</h3>
+              <p class="product__desc" data-i18n="store.hoodieDesc">Negro, logo al frente y estampado completo en la espalda.</p>
+              <p class="product__price">$120.000 <small>COP</small></p>
+              <!-- Los colores rojo y azul se simulan girando el tono de la foto verde (data-hue, en grados;
+                   data-sat aviva el color).
+                   Con fotos reales, cambiar data-hue por data-img="img/merch/hoodie-rojo.jpg" -->
+              <div class="product__opts" data-opt="variant" role="group" aria-label="Color del logo" data-i18n-attr="aria-label:store.color">
+                <button class="swatch" type="button" aria-pressed="true" data-variant="logo-verde" data-img="img/merch/hoodie.jpg" style="--sw: #86cf45" aria-label="Logo verde" data-i18n-attr="aria-label:store.green" title="Logo verde"></button>
+                <button class="swatch" type="button" aria-pressed="false" data-variant="logo-rojo" data-hue="-100" data-sat="2" style="--sw: #dd5a3c" aria-label="Logo rojo" data-i18n-attr="aria-label:store.red" title="Logo rojo"></button>
+                <button class="swatch" type="button" aria-pressed="false" data-variant="logo-azul" data-hue="135" style="--sw: #7183ec" aria-label="Logo azul" data-i18n-attr="aria-label:store.blue" title="Logo azul"></button>
+              </div>
+              <div class="product__opts" data-opt="size" role="group" aria-label="Talla" data-i18n-attr="aria-label:store.sizes">
+                <button class="size" type="button" aria-pressed="false">S</button>
+                <button class="size" type="button" aria-pressed="false">M</button>
+                <button class="size" type="button" aria-pressed="false">L</button>
+                <button class="size" type="button" aria-pressed="false">XL</button>
+                <button class="size" type="button" aria-pressed="false">XXL</button>
+              </div>
+              <div class="product__actions">
+                <button class="btn btn--primary btn--sm" type="button" data-order data-i18n="store.order">Pedir por correo</button>
+                <button class="btn btn--ghost btn--sm" type="button" data-vote data-i18n="store.vote" hidden>🔔 Quiero que vuelva</button>
+                <p class="product__hint" aria-live="polite" data-i18n="store.hintNone"></p>
+                <button class="product__notify" type="button" data-notify data-i18n="store.notify" hidden>Avísame por correo</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product" data-product="cd-venganza-natural">
+            <div class="product__media">
+              <img class="product__img" src="img/merch/cd.jpg" alt="CD del EP Venganza Natural" data-i18n-attr="alt:store.cdAlt" width="1280" height="801" loading="lazy" style="--pos: 38% 50%">
+              <span class="product__stamp" data-i18n="store.soldout">Sold Out</span>
+            </div>
+            <div class="product__body">
+              <h3 class="product__name" data-i18n="store.cdName">CD Venganza Natural</h3>
+              <p class="product__desc" data-i18n="store.cdDesc">El EP en formato físico.</p>
+              <p class="product__price">$30.000 <small>COP</small></p>
+              <div class="product__actions">
+                <button class="btn btn--primary btn--sm" type="button" data-order data-i18n="store.order">Pedir por correo</button>
+                <button class="btn btn--ghost btn--sm" type="button" data-vote data-i18n="store.vote" hidden>🔔 Quiero que vuelva</button>
+                <p class="product__hint" aria-live="polite" data-i18n="store.hintNone"></p>
+                <button class="product__notify" type="button" data-notify data-i18n="store.notify" hidden>Avísame por correo</button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <!-- ===== TOUR ===== -->
-    <section class="section section--dark tour" id="tour">
+    <section class="section tour" id="tour">
       <div class="section__inner">
         <h2 class="section__title" data-i18n="tour.title">Próximos Shows</h2>
 

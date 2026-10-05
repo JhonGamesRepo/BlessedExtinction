@@ -38,6 +38,18 @@ El diseño anterior de esta carpeta (concepto «Brutalismo industrial») quedó 
 
 Se abre desde el enlace bajo «Sin fechas anunciadas» (Tour) y desde el botón «Minijuego» del pie. Va en un `<dialog>` a pantalla completa en móvil. El jugador detiene el péndulo en la zona dorada; cada acierto acelera el péndulo y achica la zona, un acierto en el centro vale 2 puntos y con 3 fallos se acaba la partida. El récord queda guardado en el navegador. Al terminar aparecen los enlaces de `GAME_LINKS` en `js/main.js` (YouTube y Spotify; hay una línea comentada para añadir la tienda de merch).
 
+## Tienda
+
+Sección `#tienda` entre «La Banda» y «Tour», con la camiseta (tres colores de logo), el hoodie y el CD. Todo se edita en `index.html` (hay un comentario encima de la sección):
+
+- **Precio:** el texto de `.product__price`.
+- **Agotado:** `data-soldout` en el `<article>` (todo el producto) o en un botón de color o talla. La foto se apaga con el sello «Sold Out» y el botón «Pedir por correo» se cambia por «🔔 Quiero que vuelva».
+- **Pedir por correo:** abre el correo del visitante dirigido a `CONTACT_MAIL` (`js/main.js`), con el asunto y el pedido escritos (producto · color · talla). La talla es obligatoria si el producto tiene tallas. Debajo se muestra la dirección, por si el visitante no tiene programa de correo configurado.
+- **Votos:** van al Worker (`POST /vote`), que los guarda en D1 y avisa al grupo de Telegram. En el grupo, `/votos` muestra el ranking con el reparto por talla. Un voto por producto y navegador. Tras votar, el fan puede pedir por correo que le avisen cuando vuelva.
+- **Mockup de la camiseta:** silueta SVG con el arte encima. La tela (`#1d1917`) es apenas más clara que el fondo de los JPG (`rgb(17,13,12)`) y el arte usa `mix-blend-mode: lighten`, así que el recuadro negro desaparece. Un arte nuevo necesita ese mismo fondo (o más oscuro).
+- **Colores del hoodie:** sólo hay foto en verde. El rojo y el azul se simulan girando el tono de esa foto (`data-hue` en grados y `data-sat` para avivar el color). Los negros y grises no cambian. Si hay fotos reales, cambia `data-hue` por `data-img="img/merch/hoodie-rojo.jpg"` en el botón del color.
+- `data-product` y `data-variant` son los nombres que ve la banda en Telegram: minúsculas, números y guiones.
+
 ## Chat con la banda (Telegram)
 
 Botón flotante abajo a la derecha que sube cuando aparece el reproductor de Spotify. En móvil se abre como hoja inferior. El backend está en `../chat-worker-blessed/`, donde también está la guía de configuración y seguridad. `CHAT_API` y `TURNSTILE_SITEKEY` en `js/main.js` apuntan al Worker publicado. En `localhost` / `127.0.0.1` la página usa siempre el Worker local (`npm run dev`), porque el de producción sólo acepta peticiones desde la web publicada; abierta como archivo (`file://`) no muestra el chat.
