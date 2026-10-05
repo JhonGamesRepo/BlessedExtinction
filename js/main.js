@@ -1395,6 +1395,19 @@
       location.href = `mailto:${CONTACT_MAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     };
 
+    // Avisa a la banda por Telegram (vía Worker) de que alguien empezó un pedido por correo.
+    // El nombre del producto va en el idioma en que el fan ve la página.
+    // keepalive: el aviso sale aunque abrir el correo cambie de página. Si falla, el pedido sigue igual.
+    const notifyBand = (kind, { product, variant, size, label }) => {
+      if (!WORKER_API) return;
+      fetch(`${WORKER_API}/intent`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kind, voter, product, variant, size, label, lang: currentLang }),
+        keepalive: true,
+      }).catch(() => { /* sin conexión: el correo se abre igual */ });
+    };
+
     document.querySelectorAll('.product').forEach((card) => {
       const print = card.querySelector('[data-print]');
       const orderBtn = card.querySelector('[data-order]');
@@ -1470,8 +1483,9 @@
           sizeGroup.querySelector('button').focus();
           return;
         }
-        const { label } = item();
-        toMail(`${tr('store.orderSubject')} · ${label}`, tr('store.orderMsg').replace('{item}', label));
+        const current = item();
+        notifyBand('order', current);
+        toMail(`${tr('store.orderSubject')} · ${current.label}`, tr('store.orderMsg').replace('{item}', current.label));
         // Sin programa de correo configurado, el enlace no hace nada: se muestra la dirección
         say('store.mailHint');
       });
@@ -1499,8 +1513,9 @@
       });
 
       notifyBtn.addEventListener('click', () => {
-        const { label } = item();
-        toMail(`${tr('store.notifySubject')} · ${label}`, tr('store.notifyMsg').replace('{item}', label));
+        const current = item();
+        notifyBand('notify', current);
+        toMail(`${tr('store.notifySubject')} · ${current.label}`, tr('store.notifyMsg').replace('{item}', current.label));
         say('store.mailHint');
       });
 

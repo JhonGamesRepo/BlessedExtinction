@@ -6,8 +6,9 @@
 //  POST /send      visitante → grupo de Telegram (el 1.er mensaje exige Turnstile)
 //  GET  /poll      visitante ← respuestas de la banda
 //  POST /vote      tienda: «Quiero que vuelva» → se guarda y avisa al grupo
+//  POST /intent    tienda: el fan pulsó «Pedir por correo» o «Avísame» → aviso al grupo
 //  POST /telegram  webhook de Telegram (verificado con WEBHOOK_SECRET)
-//                  /votos en el grupo muestra el ranking de productos pedidos
+//                  /votos y /pedidos en el grupo muestran los rankings
 // =========================================================
 
 const MAX_LEN = 1000;              // caracteres por mensaje
@@ -18,6 +19,12 @@ const VOTES_PER_IP_DAY = 20;       // votos de la tienda por IP y día
 const VOTE_RETENTION_DAYS = 180;   // los votos cuentan (y se guardan) durante este tiempo
 const SLUG = /^[a-z0-9-]{1,32}$/;  // data-product / data-variant de la página
 const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
+const INTENTS_PER_IP_HOUR = 10;    // avisos de pedido por IP y hora
+const INTENT_REPEAT_MIN = 15;      // el mismo pedido del mismo navegador no se repite antes
+const INTENT_RETENTION_DAYS = 30;  // historial de pedidos (para /pedidos)
+// Nombre legible que manda la página («Camiseta Blessed Extinction · Logo azul · Talla M»):
+// sólo letras, números, espacios, · y guiones, así no puede llevar enlaces
+const LABEL = /^[\p{L}\p{N} ·-]{1,100}$/u;
 const NAME_LEN = 40;               // caracteres del nombre del visitante
 // Un color por conversación para distinguirlas de un vistazo en el grupo
 const DOTS = ['🔴', '🟠', '🟡', '🟢', '🔵', '🟣', '🟤', '⚪'];
@@ -53,6 +60,7 @@ export default {
       if (url.pathname === '/send' && request.method === 'POST') return json(await onSend(request, env), 200, cors);
       if (url.pathname === '/poll' && request.method === 'GET') return json(await onPoll(url, env), 200, cors);
       if (url.pathname === '/vote' && request.method === 'POST') return json(await onVote(request, env), 200, cors);
+      if (url.pathname === '/intent' && request.method === 'POST') return json(await onIntent(request, env), 200, cors);
       return json({ error: 'not_found' }, 404, cors);
     } catch (err) {
       if (err instanceof ApiError) return json({ error: err.code }, err.status, cors);
@@ -69,6 +77,7 @@ export default {
       env.DB.prepare('DELETE FROM tg_map WHERE ts < ?').bind(cutoff),
       env.DB.prepare('DELETE FROM sessions WHERE last < ?').bind(cutoff),
       env.DB.prepare('DELETE FROM votes WHERE ts < ?').bind(Date.now() - VOTE_RETENTION_DAYS * 86400e3),
+      env.DB.prepare('DELETE FROM intents WHERE ts < ?').bind(Date.now() - INTENT_RETENTION_DAYS * 86400e3),
     ]);
   },
 };
@@ -192,6 +201,85 @@ async function onVote(request, env) {
   return { ok: true };
 }
 
+// ----- Tienda: pedido por correo iniciado -----
+// La página avisa al pulsar «Pedir por correo» / «Avísame por correo». Es un aviso de
+// intención: el correo puede no llegar si el fan no lo envía.
+async function onIntent(request, env) {
+  const body = await request.json().catch(() => ({}));
+  const kind = body.kind === 'notify' ? 'notify' : 'order';
+  const product = typeof body.product === 'string' ? body.product : '';
+  const variant = typeof body.variant === 'string' ? body.variant : '';
+  const size = typeof body.size === 'string' ? body.size : '';
+  const voter = typeof body.voter === 'string' ? body.voter : '';
+  const label = typeof body.label === 'string' ? body.label.trim() : '';
+  if (!SLUG.test(product) || (variant && !SLUG.test(variant)) || (size && !SIZES.includes(size))) throw new ApiError('item', 400);
+  if (!/^[A-Za-z0-9_-]{16,64}$/.test(voter)) throw new ApiError('voter', 400);
+  const lang = body.lang === 'en' ? 'en' : 'es';
+  const item = variant ? `${product}/${variant}` : product;
+  const now = Date.now();
+
+  const ip = request.headers.get('CF-Connecting-IP') || '';
+  const ipHash = await sha256(`${env.WEBHOOK_SECRET}:${ip}`); // la IP no se guarda en claro
+  const voterHash = await sha256(voter);
+  const { perIp, repeated } = await env.DB.prepare(
+    'SELECT SUM(ip_hash = ? AND ts > ?) AS perIp, SUM(voter = ? AND item = ? AND kind = ? AND IFNULL(size, \'\') = ? AND ts > ?) AS repeated FROM intents WHERE ts > ?'
+  ).bind(ipHash, now - 3600e3, voterHash, item, kind, size, now - INTENT_REPEAT_MIN * 60e3, now - 3600e3).first();
+  if (repeated) return { ok: true, repeated: true }; // doble clic o volvió a pulsar: no se avisa otra vez
+  if (perIp >= INTENTS_PER_IP_HOUR) throw new ApiError('rate', 429);
+
+  await env.DB.prepare('INSERT INTO intents (kind, item, size, voter, ip_hash, ts) VALUES (?, ?, ?, ?, ?, ?)')
+    .bind(kind, item, size || null, voterHash, ipHash, now).run();
+  const { today } = await env.DB.prepare('SELECT COUNT(*) AS today FROM intents WHERE kind = ? AND ts > ?')
+    .bind(kind, startOfDayBogota(now)).first();
+
+  const header = kind === 'notify' ? '🔔 Piden aviso cuando vuelva' : '🛒 Pedido de merch por correo';
+  const lines = [
+    LABEL.test(label) ? label : item,
+    `${item}${size ? ` · talla ${size}` : ''} · ${lang.toUpperCase()}`,
+    '',
+    kind === 'notify'
+      ? 'Abrió su correo para pedir que le avisen. Revisa Gmail y guarda su dirección.'
+      : 'Abrió su correo para hacer el pedido. Revisa Gmail en unos minutos: si no llega, no lo envió.',
+    `${kind === 'notify' ? 'Avisos' : 'Pedidos'} de hoy: ${today} · /pedidos → ranking`,
+  ];
+  await tg(env, 'sendMessage', {
+    chat_id: env.CHAT_ID,
+    text: `${header}\n${lines.join('\n')}`,
+    entities: [{ type: 'bold', offset: 0, length: header.length }],
+  }).catch((err) => console.error(err));
+  return { ok: true };
+}
+
+// Medianoche de hoy en Bogotá (UTC-5, sin horario de verano)
+function startOfDayBogota(now) {
+  const offset = 5 * 3600e3;
+  return Math.floor((now - offset) / 86400e3) * 86400e3 + offset;
+}
+
+// Ranking de pedidos por correo iniciados en la página
+async function intentsReport(env) {
+  const { results } = await env.DB.prepare(
+    'SELECT kind, item, size, COUNT(*) AS n FROM intents GROUP BY kind, item, size'
+  ).all();
+  if (!results.length) return `🛒 Aún no hay pedidos por correo (últimos ${INTENT_RETENTION_DAYS} días).`;
+  const section = (kind, title) => {
+    const items = new Map();
+    for (const r of results.filter((x) => x.kind === kind)) {
+      const row = items.get(r.item) || { total: 0, sizes: [] };
+      row.total += r.n;
+      row.sizes.push([r.size || 'sin talla', r.n]);
+      items.set(r.item, row);
+    }
+    if (!items.size) return '';
+    const lines = [...items]
+      .sort((a, b) => b[1].total - a[1].total)
+      .map(([item, { total, sizes }], k) => `${k + 1}. ${item} — ${total} (${sizes.sort((a, b) => b[1] - a[1]).map(([s, n]) => `${s}×${n}`).join(', ')})`);
+    return `${title}\n${lines.join('\n')}`;
+  };
+  const parts = [section('order', '🛒 Pedidos'), section('notify', '🔔 Piden aviso')].filter(Boolean);
+  return `Pedidos por correo iniciados (últimos ${INTENT_RETENTION_DAYS} días)\n\n${parts.join('\n\n')}`;
+}
+
 // Ranking para el grupo: productos más pedidos y el reparto por talla
 async function votesReport(env) {
   const { results } = await env.DB.prepare(
@@ -228,6 +316,10 @@ async function onTelegram(update, env) {
 
   if (msg.text === '/votos' || msg.text?.startsWith('/votos@')) {
     await tg(env, 'sendMessage', { chat_id: msg.chat.id, text: await votesReport(env) });
+    return;
+  }
+  if (msg.text === '/pedidos' || msg.text?.startsWith('/pedidos@')) {
+    await tg(env, 'sendMessage', { chat_id: msg.chat.id, text: await intentsReport(env) });
     return;
   }
 
