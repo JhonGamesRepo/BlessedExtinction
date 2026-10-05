@@ -1,0 +1,16 @@
+{
+  "name": "blessed-chat",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --port 8787 --ip 127.0.0.1",
+    "mock": "node dev/mock-telegram.mjs",
+    "deploy": "wrangler deploy",
+    "db:init": "wrangler d1 execute blessed-chat --remote --file=schema.sql",
+    "db:init:local": "wrangler d1 execute blessed-chat --local --file=schema.sql",
+    "db:reset:local": "wrangler d1 execute blessed-chat --local --command \"DELETE FROM messages; DELETE FROM sessions; DELETE FROM tg_map;\""
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

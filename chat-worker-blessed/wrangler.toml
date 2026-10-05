@@ -1,0 +1,27 @@
+name = "blessed-chat"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+
+# Limpieza diaria de mensajes viejos (ver RETENTION_DAYS en src/index.js)
+[triggers]
+crons = ["17 4 * * *"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "blessed-chat"
+database_id = "29ed9a75-c2d6-4ab0-bd13-db1db8bcaf49"
+
+[vars]
+# Orígenes que pueden usar el chat (separados por coma, sin "/" final).
+# En local, .dev.vars lo reemplaza para permitir http://127.0.0.1:5500
+ALLOWED_ORIGINS = "https://jhongamesrepo.github.io"
+# chat_id del grupo de Telegram de la banda (escribe /id en el grupo para verlo)
+CHAT_ID = "-5038171976"
+# "true" muestra en la web el nombre de quien responde ("Julio · Blessed Extinction")
+SHOW_MEMBER_NAME = "false"
+
+# Secretos (NUNCA aquí): npx wrangler secret put <NOMBRE>
+#   BOT_TOKEN         token de @BotFather
+#   WEBHOOK_SECRET    cadena aleatoria que Telegram envía en cada webhook
+#   TURNSTILE_SECRET  clave secreta de Cloudflare Turnstile
+#   ENC_KEY           clave AES de 32 bytes en base64 para cifrar los mensajes guardados
