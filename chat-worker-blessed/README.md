@@ -29,6 +29,14 @@ Cuando un producto está agotado, la página envía `POST /vote` con el producto
 - Los votos se guardan 180 días.
 - **Base creada antes de la tienda:** `npm run db:votes` (aplica `migrations/002-votos.sql`). Hazlo **antes** de desplegar el Worker nuevo: la limpieza diaria también borra los votos viejos y fallaría sin la tabla.
 
+## Tienda: avisos de pedido por correo
+
+Al pulsar «Pedir por correo» o «Avísame por correo», la página envía `POST /intent` (producto, color, talla, nombre legible e idioma) y el Worker publica en el grupo `🛒 Pedido de merch por correo` o `🔔 Piden aviso cuando vuelva`. Escribe **`/pedidos`** en el grupo para ver el ranking de los últimos 30 días.
+
+- Es un aviso de intención: el pedido real es el correo que llega a Gmail.
+- Mismas validaciones que los votos, más el nombre legible (sólo letras, números, espacios, `·` y guiones; si no, se muestra el identificador). 10 avisos por IP y hora, y el mismo pedido del mismo navegador no se repite en 15 minutos.
+- **Base creada antes de estos avisos:** `npm run db:intents` (aplica `migrations/003-pedidos.sql`), también **antes** de desplegar.
+
 ## Seguridad
 
 | Riesgo | Medida |
@@ -40,7 +48,8 @@ Cuando un producto está agotado, la página envía `POST /vote` con el producto
 | Otra web usando tu chat | CORS: sólo responde a `ALLOWED_ORIGINS`. |
 | Bots y spam | Cloudflare Turnstile al iniciar una conversación. Límites: 5 conversaciones por IP y hora, 8 mensajes cada 5 minutos, 1000 caracteres por mensaje. |
 | Inyección de HTML/XSS | La web pinta los mensajes como texto, nunca como HTML. A Telegram se envían sin formato. |
-| Retención | Un cron diario borra todo lo que tenga más de 30 días. |
+| Spam de avisos de pedido (`/intent`) | 10 por IP y hora · el mismo pedido del mismo navegador no se repite en 15 min · sólo productos y tallas válidos · el nombre legible no admite enlaces ni símbolos. |
+| Retención | Un cron diario borra el chat de más de 30 días, los avisos de pedido de más de 30 días y los votos de más de 180. |
 
 > **Hay que tenerlo claro:** los chats con bots de Telegram **no tienen cifrado de extremo a extremo**. Van cifrados en tránsito, pero Telegram y quien esté en el grupo pueden leerlos. Por eso el widget le dice al visitante que no comparta contraseñas ni datos bancarios.
 
