@@ -49,7 +49,7 @@
   <div class="box"><b>Reproductor flotante</b><p>Spotify iframe API · suena al entrar</p></div>
   <div class="box"><b>Discografía · Videos · Plataformas · Linterna</b><p>Spotify embed · YouTube con fachada · arte con parallax · lightbox</p></div>
   <div class="box"><b>Minijuego «El Péndulo»</b><p>&lt;dialog&gt; · SVG + requestAnimationFrame · al final, YouTube, Spotify y la tienda</p></div>
-  <div class="box new" id="storeW"><b>Tienda</b><p>Camiseta (mockup SVG) · hoodie (color simulado) · CD<br>Disponible → «Pedir por correo»<br><code>data-soldout</code> → sello Sold Out y «Quiero que vuelva»</p></div>
+  <div class="box new" id="storeW"><b>Tienda</b><p>Camiseta (mockup SVG) · hoodie (color simulado) · CD<br>Disponible → «Pedir por correo» + aviso al grupo<br><code>data-soldout</code> → sello Sold Out y «Quiero que vuelva»</p></div>
   <div class="box" id="chatW"><b>Widget de chat</b><p>Botón flotante + panel · nombre y Turnstile al 1.er mensaje · consulta cada 4 s (abierto) / 30 s (cerrado)</p></div>
   <div class="box" style="border-left-color:var(--ash); margin-top:12px"><b>localStorage</b> <span style="font-size:12px;color:var(--ash)">(sólo en ese navegador)</span>
     <p><code>be-lang</code> idioma · <code>be-pendulum-best</code> récord<br><code>be-chat-sid</code> conversación · <code>be-chat-seen</code> último leído<br><code>be-chat-name</code> nombre · <code>be-voter</code> id anónimo para votar<br><code>be-votes</code> productos ya votados</p></div>
@@ -87,25 +87,26 @@
     <div class="mono" style="line-height:1.75">
       <code>POST /send</code> &nbsp;visitante → grupo<br>
       <code>GET&nbsp; /poll</code> &nbsp;respuestas nuevas<br>
-      <code>POST /vote</code> &nbsp;«Quiero que vuelva» <span style="color:var(--gold-l)">· nuevo</span><br>
-      <code>POST /telegram</code> webhook · <code>/votos</code> ranking<br>
-      <code>cron 04:17</code> &nbsp;chat &gt; 30 días · votos &gt; 180
+      <code>POST /vote</code> &nbsp;«Quiero que vuelva»<br>
+      <code>POST /intent</code> aviso de pedido por correo <span style="color:var(--gold-l)">· nuevo</span><br>
+      <code>POST /telegram</code> webhook · <code>/votos</code> <code>/pedidos</code><br>
+      <code>cron 04:17</code> &nbsp;chat y pedidos &gt; 30 d · votos &gt; 180
     </div>
     <p style="margin-top:8px">CORS sólo jhongamesrepo.github.io · límites anti-spam</p>
   </div>
   <div class="box" id="d1" style="margin-top:46px"><b>Base de datos D1 «blessed-chat»</b>
-    <p style="line-height:1.7"><code>sessions</code> id = SHA-256(sid) · nº · nombre cifrado · ip_hash<br><code>messages</code> texto cifrado AES-256-GCM<br><code>tg_map</code> mensaje de Telegram → conversación<br><code>counters</code> numeración #1, #2…<br><code>votes</code> producto/color · talla · SHA-256(votante) · ip_hash</p></div>
+    <p style="line-height:1.7"><code>sessions</code> id = SHA-256(sid) · nº · nombre cifrado · ip_hash<br><code>messages</code> texto cifrado AES-256-GCM<br><code>tg_map</code> mensaje de Telegram → conversación<br><code>counters</code> numeración #1, #2…<br><code>votes</code> producto/color · talla · SHA-256(votante) · ip_hash<br><code>intents</code> pedidos por correo iniciados · 30 días</p></div>
   <div class="box" id="secrets" style="margin-top:26px; border-left-color:var(--ember)"><b>🔒 Secrets (cifrados por Cloudflare)</b>
     <p><code>BOT_TOKEN</code> · <code>WEBHOOK_SECRET</code><br><code>TURNSTILE_SECRET</code> · <code>ENC_KEY</code></p></div>
 </div>
 
 <!-- Telegram -->
-<div class="zone tgz" id="zTg" style="left:1600px; top:120px; width:260px; height:600px;">
+<div class="zone tgz" id="zTg" style="left:1600px; top:120px; width:260px; height:640px;">
   <div class="head"><span class="tag t-tg">Telegram</span></div>
   <div class="box" id="tgApi"><b>Bot API</b><p>api.telegram.org</p></div>
   <div class="box" id="tgBot" style="margin-top:70px"><b>Bot de la banda</b><p>Privacy mode activo: sólo ve respuestas a sus mensajes</p></div>
   <div class="box" id="tgGroup" style="margin-top:70px"><b>Grupo «Blessed Extinction · Web»</b><p>Cada conversación llega como «🟢 #12 · Nombre» · integrantes responden con «Responder» · el bot marca 👍 lo enviado</p></div>
-  <div class="box new" id="tgVotes"><b>Votos de la tienda</b><p>«Quieren que vuelva · hoodie · talla L · Votos: 7»<br><code>/votos</code> → ranking por producto y talla</p></div>
+  <div class="box new" id="tgVotes"><b>Avisos de la tienda</b><p>«🛒 Pedido de merch por correo» · «Quieren que vuelva»<br><code>/votos</code> y <code>/pedidos</code> → rankings por producto y talla</p></div>
 </div>
 
 <svg class="arrows" id="arrows" viewBox="0 0 1900 1200"></svg>
@@ -117,8 +118,8 @@
   <div><b>Sin credenciales en la web</b>El token del bot y las claves sólo existen como Secrets del Worker.</div>
   <div><b>Cifrado en tránsito</b>HTTPS en todo el camino: GitHub Pages → Worker → Telegram.</div>
   <div><b>Cifrado en reposo</b>Mensajes y nombres con AES-256-GCM. Id de visitante e IP sólo como hash SHA-256.</div>
-  <div><b>Contra abusos</b>Turnstile · CORS · 5 conversaciones/h · 8 mensajes/5 min · votos: 1 por producto y navegador, 20/día por IP, sólo ids y tallas válidas.</div>
-  <div><b>Retención y límite</b>Chat: 30 días · votos: 180 días. Telegram no es E2E: el widget pide no enviar datos sensibles.</div>
+  <div><b>Contra abusos</b>Turnstile · CORS · 5 conversaciones/h · 8 mensajes/5 min · votos 20/día y avisos de pedido 10/h por IP, sólo ids y tallas válidas.</div>
+  <div><b>Retención y límite</b>Chat y avisos de pedido: 30 días · votos: 180 días. Telegram no es E2E: el widget pide no enviar datos sensibles.</div>
 </div>
 
 <script>
@@ -156,7 +157,7 @@ const yb = 884, xl = 575; // por debajo de «Servicios externos»
 const ys = store.bottom - 16;
 line(`M${B.right + 2} ${y}H${xl}V${yb}H${xr}V${wy}H${w.left - 2}`, 'gold', { both: true });
 svg.insertAdjacentHTML('beforeend', `<path d="M${B.right + 2} ${ys}H${xl}" fill="none" stroke="${C.gold}" stroke-width="2"/><circle cx="${xl}" cy="${ys}" r="4" fill="${C.gold}"/>`);
-label(820, yb - 8, n(3) + 'POST /send · GET /poll · POST /vote', 'HTTPS · JSON · Turnstile sólo en el 1.er mensaje del chat', 'center');
+label(820, yb - 8, n(3) + 'POST /send · GET /poll · POST /vote · /intent', 'HTTPS · JSON · Turnstile sólo en el 1.er mensaje del chat', 'center');
 // 8 tienda → correo del visitante
 const ym = store.top + 18, xm = 608, my = mail.top + mail.height / 2;
 line(`M${B.right + 2} ${ym}H${xm}V${my}H${gx - 2}`, 'ember', { dash: '6 5' });
@@ -167,14 +168,14 @@ line(`M${tx} ${w.top - 2}V${ts.bottom + 2}`, 'gold'); label(tx + 14, w.top - 4, 
 // 5 Worker → Telegram   6 Telegram → Worker
 const y5 = w.top + 50, y6 = w.bottom - 50;
 line(`M${w.right + 2} ${y5}H${T.left - 2}`, 'tg'); label((w.right + T.left) / 2, y5 - 6, n(5) + 'sendMessage', 'chat y votos · texto plano', 'center');
-line(`M${T.left - 2} ${y6}H${w.right + 2}`, 'tg'); label((w.right + T.left) / 2, y6 - 6, n(6) + 'webhook', 'respuestas · /votos', 'center');
+line(`M${T.left - 2} ${y6}H${w.right + 2}`, 'tg'); label((w.right + T.left) / 2, y6 - 6, n(6) + 'webhook', 'respuestas · /votos · /pedidos', 'center');
 // Bot API ↔ bot ↔ grupo
 const cx = api.left + api.width / 2;
 line(`M${cx} ${api.bottom + 2}V${bot.top - 2}`, 'tg', { both: true });
 line(`M${cx} ${bot.bottom + 2}V${grp.top - 2}`, 'tg', { both: true });
 // 7 Worker ↔ D1
 const dx = w.left + 60;
-line(`M${dx} ${w.bottom + 2}V${d1.top - 2}`, 'gold', { both: true }); label(dx + 16, d1.top - 12, n(7) + 'guarda · lee', 'mensajes cifrados · votos');
+line(`M${dx} ${w.bottom + 2}V${d1.top - 2}`, 'gold', { both: true }); label(dx + 16, d1.top - 12, n(7) + 'guarda · lee', 'mensajes cifrados · votos · pedidos');
 // Secrets → Worker (por el borde derecho de la zona)
 const sx = w.right + 10, sy = sec.top + sec.height / 2;
 line(`M${sec.right + 2} ${sy}H${sx}V${w.bottom - 20}H${w.right + 2}`, 'ember', { dash: '4 4' });
