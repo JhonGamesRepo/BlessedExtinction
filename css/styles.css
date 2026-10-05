@@ -1,0 +1,2293 @@
+/* =========================================================
+   Paleta unificada "Incorruptible Cadavérico"
+   Negros cálidos, hueso, oro viejo como único acento y
+   sangre/brasa sólo para rellenos y resplandores.
+   ========================================================= */
+:root {
+  --c-bg: #0d0a08;
+  --c-bg-soft: #16110d;
+  --c-line: #2f261d;
+  --c-ash: #857867;
+  --c-text: #b5aa94;
+  --c-bone: #d8cba8;
+  --c-bone-light: #ece3cf;
+  --c-gold: #c9a24a;
+  --c-gold-light: #f0d58a;
+  --c-blood: #6e1a12;
+  --c-ember: #b3361b;
+  --c-nave: #1a0705;
+  /* El logo verde se dora igual en todo el sitio */
+  --logo-tint: grayscale(1) sepia(1) saturate(2.2) hue-rotate(-6deg);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 72px;
+}
+
+body {
+  font-family: "Inter", system-ui, sans-serif;
+  background: var(--c-bg);
+  color: var(--c-text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+body.is-locked {
+  overflow: hidden;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+.section {
+  padding-block: 5rem;
+}
+@media (min-width: 900px) {
+  .section {
+    padding-block: 7rem;
+  }
+}
+.section__inner {
+  width: 100%;
+  max-width: 1180px;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+@media (min-width: 900px) {
+  .section__inner {
+    padding-inline: 2rem;
+  }
+}
+.section__title {
+  font-family: "Cinzel", serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--c-bone-light);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+.section__title::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 3px;
+  margin: 1rem auto 0;
+  background: linear-gradient(90deg, transparent, var(--c-gold), transparent);
+}
+.section--dark {
+  background: var(--c-bg-soft);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.8rem;
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border: 2px solid var(--c-gold);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+.btn--primary {
+  background: var(--c-blood);
+  color: var(--c-bone-light);
+}
+.btn--primary:hover {
+  background: var(--c-ember);
+  box-shadow: 0 0 18px rgba(201, 162, 74, 0.55);
+  transform: translateY(-2px);
+}
+.btn--ghost {
+  background: transparent;
+  color: var(--c-bone-light);
+}
+.btn--ghost:hover {
+  background: rgba(201, 162, 74, 0.12);
+  box-shadow: 0 0 18px rgba(201, 162, 74, 0.55);
+  transform: translateY(-2px);
+}
+.btn--sm {
+  padding: 0.55rem 1.1rem;
+  font-size: 0.75rem;
+}
+.btn:focus-visible {
+  outline: 2px solid var(--c-bone-light);
+  outline-offset: 3px;
+}
+
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--c-nave);
+  transition: opacity 0.8s cubic-bezier(0.77, 0, 0.18, 1), transform 0.8s cubic-bezier(0.77, 0, 0.18, 1), visibility 0.8s cubic-bezier(0.77, 0, 0.18, 1);
+}
+.splash__bg {
+  position: absolute;
+  inset: -6%;
+  background: url("../img/incorruptible-cadaverico.jpg") center 30%/cover no-repeat;
+  animation: naveReveal 7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.splash__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 55% 75% at 50% 42%, transparent 0%, rgba(26, 7, 5, 0.55) 55%, rgba(0, 0, 0, 0.96) 100%), linear-gradient(180deg, rgba(179, 54, 27, 0.25) 0%, transparent 45%, rgba(0, 0, 0, 0.85) 100%);
+}
+.splash__rays {
+  position: absolute;
+  left: 50%;
+  top: -30%;
+  width: 160vmax;
+  height: 160vmax;
+  margin-left: -80vmax;
+  transform-origin: 50% 0;
+  background: repeating-conic-gradient(from 168deg at 50% 0%, rgba(240, 213, 138, 0.1) 0deg 3deg, transparent 3deg 9deg);
+  -webkit-mask-image: radial-gradient(ellipse 40% 60% at 50% 0%, #000 0%, transparent 70%);
+  mask-image: radial-gradient(ellipse 40% 60% at 50% 0%, #000 0%, transparent 70%);
+  mix-blend-mode: screen;
+  opacity: 0;
+  animation: raysIn 3s ease 0.8s forwards, raysSway 9s ease-in-out 3.8s infinite alternate;
+}
+.splash__dust {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.splash__dust span {
+  position: absolute;
+  bottom: -10px;
+  width: var(--s, 3px);
+  height: var(--s, 3px);
+  border-radius: 50%;
+  background: var(--c-gold-light);
+  box-shadow: 0 0 6px var(--c-gold);
+  opacity: 0;
+  animation: dustRise var(--d, 6s) linear var(--delay, 0s) infinite;
+}
+.splash__content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.3rem;
+  padding: 1rem;
+  text-align: center;
+}
+.splash__logo {
+  width: min(540px, 84vw);
+  filter: var(--logo-tint) brightness(1.05) drop-shadow(0 0 18px rgba(201, 162, 74, 0.45));
+  animation: relicReveal 3s cubic-bezier(0.2, 0.8, 0.2, 1) 0.6s both, candleGlow 3s ease-in-out 3.6s infinite;
+}
+.splash__kicker {
+  font-family: "Cinzel", serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: var(--c-gold);
+  opacity: 0;
+  animation: fadeUp 1s ease 3.2s forwards;
+}
+.splash__title {
+  font-family: "UnifrakturMaguntia", "Cinzel", serif;
+  font-weight: 400;
+  font-size: clamp(1.8rem, 6vw, 3.2rem);
+  line-height: 1.15;
+  color: var(--c-bone);
+  text-shadow: 0 0 18px rgba(179, 54, 27, 0.8), 0 2px 0 #000;
+}
+.splash__title .word {
+  display: inline-block;
+  white-space: nowrap;
+}
+.splash__title .char {
+  display: inline-block;
+  opacity: 0;
+  animation: inkIn 0.6s ease forwards;
+  animation-delay: calc(3.8s + var(--i) * 70ms);
+}
+.splash__ornament {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  color: var(--c-gold);
+  opacity: 0;
+  animation: fadeUp 0.8s ease 1.4s forwards;
+}
+.splash__ornament::before, .splash__ornament::after {
+  content: "";
+  width: clamp(40px, 12vw, 110px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--c-gold));
+}
+.splash__ornament::after {
+  transform: scaleX(-1);
+}
+.splash__hourglass {
+  width: 24px;
+  height: 38px;
+  overflow: visible;
+}
+.splash__hourglass .sand-top {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: sandTop 7s linear forwards;
+}
+.splash__hourglass .sand-bottom {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: sandBottom 7s linear forwards;
+}
+.splash__hourglass .sand-stream {
+  animation: sandStream 7s linear forwards;
+}
+.splash__gate {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.6rem;
+  padding: 1rem;
+  text-align: center;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+.splash__hint {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: "Cinzel", serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--c-gold);
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.6s forwards;
+}
+.splash__hint svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+.splash__enter {
+  padding: 1rem 2.6rem;
+  font-size: 1rem;
+  letter-spacing: 0.35em;
+  border-color: var(--c-gold);
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.2s forwards, gatePulse 2.4s ease-in-out 1s infinite;
+}
+.splash__enter:hover {
+  background: rgba(201, 162, 74, 0.14);
+  box-shadow: 0 0 20px rgba(201, 162, 74, 0.55);
+}
+.splash__mute {
+  margin-top: -0.4rem;
+  padding: 0.4rem 0.8rem;
+  font-family: "Cinzel", serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--c-text);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  cursor: pointer;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.5s forwards;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.splash__mute:hover {
+  color: var(--c-bone);
+  border-bottom-color: var(--c-ash);
+}
+.splash__mute:focus-visible {
+  outline: 2px solid var(--c-bone-light);
+  outline-offset: 3px;
+}
+.splash.is-waiting :is(.splash__bg, .splash__rays, .splash__content, .splash__content *) {
+  animation-play-state: paused;
+}
+.splash__lang.lang {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  z-index: 3;
+  margin: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+.splash__skip {
+  position: absolute;
+  right: 1.2rem;
+  bottom: 1.2rem;
+  z-index: 3;
+  padding: 0.55rem 1rem;
+  font-family: "Cinzel", serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--c-text);
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--c-line);
+  cursor: pointer;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.8s forwards;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.splash__skip:hover, .splash__skip:focus-visible {
+  color: var(--c-bone-light);
+  border-color: var(--c-gold);
+  outline: none;
+}
+.splash.is-replay .splash__gate {
+  display: none;
+}
+.splash.is-playing .splash__gate {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.splash.is-hidden {
+  opacity: 0;
+  transform: scale(1.08);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* ----- Salida del splash: estalla como un vitral (fragmentos creados por el JS) ----- */
+.splash-exit {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  overflow: hidden;
+  pointer-events: none;
+}
+.splash-exit__piece {
+  position: absolute;
+  overflow: hidden; /* cada trozo mide sólo su caja (la fija el JS) */
+  will-change: transform, opacity;
+}
+.splash-exit--vitral .splash-exit__piece {
+  filter: drop-shadow(0 0 1px #f0d58a) drop-shadow(0 0 4px rgba(201, 162, 74, 0.75));
+}
+@media (max-width: 700px) {
+  .splash-exit--vitral .splash-exit__piece {
+    filter: drop-shadow(0 0 1.5px #f0d58a);
+  }
+}
+
+.header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 100;
+  height: 72px;
+  transition: background 0.35s ease, border-color 0.35s ease;
+  border-bottom: 1px solid transparent;
+}
+.header.is-scrolled {
+  background: rgba(13, 10, 8, 0.92);
+  backdrop-filter: blur(8px);
+  border-color: var(--c-line);
+}
+.header__inner {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1180px;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+@media (min-width: 900px) {
+  .header__inner {
+    padding-inline: 2rem;
+  }
+}
+.header__logo img {
+  height: 40px;
+  width: auto;
+  filter: var(--logo-tint) brightness(1.05);
+}
+.header__toggle {
+  order: 3;
+  display: none;
+  background: none;
+  border: 0;
+  color: var(--c-bone-light);
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+@media (max-width: 899px) {
+  .header__toggle {
+    display: block;
+  }
+}
+
+.lang {
+  order: 2;
+  display: flex;
+  margin-left: 1.8rem;
+  border: 1px solid var(--c-line);
+}
+@media (max-width: 899px) {
+  .lang {
+    margin-left: auto;
+    margin-right: 1rem;
+  }
+}
+.lang__btn {
+  padding: 0.35rem 0.6rem;
+  font-family: "Cinzel", serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--c-ash);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+.lang__btn:hover {
+  color: var(--c-bone-light);
+}
+.lang__btn:focus-visible {
+  outline: 2px solid var(--c-bone-light);
+  outline-offset: 2px;
+}
+.lang__btn[aria-pressed=true] {
+  color: var(--c-bg);
+  background: var(--c-gold);
+}
+
+.nav {
+  order: 1;
+  margin-left: auto;
+}
+.nav__list {
+  display: flex;
+  gap: 2rem;
+}
+@media (max-width: 899px) {
+  .nav__list {
+    position: fixed;
+    inset: 72px 0 auto;
+    flex-direction: column;
+    gap: 0;
+    background: rgba(13, 10, 8, 0.97);
+    border-bottom: 1px solid var(--c-line);
+    transform: translateY(-120%);
+    transition: transform 0.35s ease;
+  }
+  .nav__list.is-open {
+    transform: translateY(0);
+  }
+}
+.nav__link {
+  font-family: "Cinzel", serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--c-text);
+  position: relative;
+  transition: color 0.2s ease;
+}
+.nav__link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 0;
+  height: 2px;
+  background: var(--c-gold);
+  transition: width 0.35s ease;
+}
+.nav__link:hover {
+  color: var(--c-bone-light);
+}
+.nav__link:hover::after {
+  width: 100%;
+}
+@media (max-width: 899px) {
+  .nav__link {
+    display: block;
+    padding: 1rem 1.5rem;
+  }
+  .nav__link::after {
+    display: none;
+  }
+}
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  background: url("../img/final-web.jpg") center/cover no-repeat;
+  isolation: isolate;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(13, 10, 8, 0.55) 0%, rgba(13, 10, 8, 0.75) 60%, var(--c-bg) 100%), radial-gradient(ellipse at center, transparent 30%, rgba(0, 0, 0, 0.7) 100%), linear-gradient(rgba(70, 30, 12, 0.4), rgba(70, 30, 12, 0.4));
+}
+.hero__content {
+  padding-top: 72px;
+  width: 100%;
+  max-width: 1180px;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+@media (min-width: 900px) {
+  .hero__content {
+    padding-inline: 2rem;
+  }
+}
+.hero__logo {
+  width: min(480px, 80vw);
+  margin: 0 auto 2rem;
+  filter: var(--logo-tint) brightness(1.05) drop-shadow(0 0 24px rgba(201, 162, 74, 0.3));
+}
+.hero__kicker {
+  display: inline-block;
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  letter-spacing: 0.35em;
+  font-size: 0.8rem;
+  color: var(--c-gold);
+  border: 1px solid rgba(201, 162, 74, 0.6);
+  padding: 0.4rem 1rem;
+  margin-bottom: 1.2rem;
+}
+.hero__title {
+  font-family: "UnifrakturMaguntia", "Cinzel", serif;
+  font-weight: 400;
+  color: var(--c-bone);
+  font-size: clamp(2.2rem, 7vw, 4.6rem);
+  line-height: 1.2;
+  text-shadow: 0 0 25px rgba(110, 26, 18, 0.9), 0 2px 0 #000;
+  margin-bottom: 1rem;
+}
+.hero__subtitle {
+  max-width: 560px;
+  margin: 0 auto 2.2rem;
+  color: var(--c-text);
+}
+.hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+.hero__scroll {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  translate: -50% 0;
+  font-size: 1.5rem;
+  color: var(--c-ash);
+  animation: bob 2s ease-in-out infinite;
+}
+
+.platforms {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border-block: 1px solid var(--c-line);
+  background: #000;
+}
+.platforms > .section__inner {
+  position: relative;
+  z-index: 1;
+}
+/* Cursor de linterna: SVG en línea (sin petición extra) que dibuja el propio
+   sistema, así que no cuesta nada al navegador. Sólo con ratón; en táctil no
+   hay cursor. El punto activo (6 6) es la lente. Sobre enlaces la linterna
+   se dora para que sigan pareciendo clicables. */
+@media (hover: hover) and (pointer: fine) {
+  .platforms {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cg transform='rotate(-45 16 16)' stroke='%230d0a08' stroke-width='1.5' stroke-linejoin='round'%3E%3Cpath fill='%23d8cba8' d='M10 4h12l-2 7h-8z'/%3E%3Crect x='12' y='11' width='8' height='17' rx='1.5' fill='%23d8cba8'/%3E%3Crect x='10' y='1.5' width='12' height='2.5' fill='%23f0d58a'/%3E%3Crect x='14.5' y='15' width='3' height='4' fill='%236e1a12' stroke='none'/%3E%3C/g%3E%3C/svg%3E") 6 6, auto;
+  }
+  .platforms a {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cg transform='rotate(-45 16 16)' stroke='%230d0a08' stroke-width='1.5' stroke-linejoin='round'%3E%3Cpath fill='%23c9a24a' d='M10 4h12l-2 7h-8z'/%3E%3Crect x='12' y='11' width='8' height='17' rx='1.5' fill='%23c9a24a'/%3E%3Crect x='10' y='1.5' width='12' height='2.5' fill='%23ece3cf'/%3E%3Crect x='14.5' y='15' width='3' height='4' fill='%23b3361b' stroke='none'/%3E%3C/g%3E%3C/svg%3E") 6 6, pointer;
+  }
+}
+
+/* ----- Linterna con parallax (ilustración art1, colores originales) -----
+   Dos copias de la ilustración: una tenue siempre visible y otra a plena luz
+   dentro de un círculo que sigue al cursor (--mx/--my, en px). Ambas se
+   desplazan un poco en sentido contrario al cursor (--px/--py, de -1 a 1).
+   La máscara va en .lantern__light, que no se mueve, para que la luz quede
+   exactamente bajo el cursor. */
+.lantern {
+  --mx: 50%;
+  --my: 40%;
+  --px: 0;
+  --py: 0;
+  --radius: 300px;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.lantern__img {
+  position: absolute;
+  inset: -40px;
+  background: url("../img/art1-web.jpg") center 22% / cover no-repeat;
+  transform: translate3d(calc(var(--px) * -28px), calc(var(--py) * -28px), 0);
+  will-change: transform;
+}
+@media (min-width: 900px) {
+  /* En pantallas anchas «cover» sólo dejaba ver la calavera central: aquí la
+     ilustración se limita a 920 px de ancho y se ve buena parte del diseño. */
+  .lantern__img {
+    background-size: min(100%, 920px) auto;
+  }
+}
+.lantern__img--dim {
+  opacity: 0.2;
+}
+.lantern__light {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-image: radial-gradient(circle var(--radius) at var(--mx) var(--my), #000 0%, rgba(0, 0, 0, 0.55) 45%, transparent 100%);
+  mask-image: radial-gradient(circle var(--radius) at var(--mx) var(--my), #000 0%, rgba(0, 0, 0, 0.55) 45%, transparent 100%);
+}
+/* Fundido arriba y abajo hacia el color de las secciones vecinas */
+.lantern::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--c-bg) 0%, transparent 16%, transparent 84%, var(--c-bg) 100%);
+}
+@media (max-width: 599px) {
+  .lantern {
+    --radius: 200px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lantern__img--dim {
+    opacity: 0.35;
+  }
+}
+.platforms .platforms__item {
+  text-align: center;
+  background: rgba(13, 10, 8, 0.72);
+  backdrop-filter: blur(3px);
+}
+.platforms__label {
+  font-family: "Cinzel", serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--c-ash);
+  text-align: center;
+  margin-bottom: 1.2rem;
+}
+.platforms__label ~ .platforms__label {
+  margin-top: 3rem;
+}
+.platforms__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+@media (min-width: 600px) {
+  .platforms__grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+@media (min-width: 600px) {
+  .platforms__grid--social {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 720px;
+    margin-inline: auto;
+  }
+}
+.platforms__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.8rem 1rem;
+  background: var(--c-bg);
+  border: 1px solid var(--c-line);
+  color: var(--c-text);
+  font-family: "Cinzel", serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: border-color 0.35s ease, color 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease;
+}
+.platforms__item svg {
+  width: 36px;
+  height: 36px;
+  fill: currentColor;
+  transition: transform 0.35s ease;
+}
+.platforms__item:hover {
+  color: var(--c-gold);
+  border-color: var(--c-gold);
+  transform: translateY(-4px);
+  box-shadow: 0 0 22px rgba(110, 26, 18, 0.55);
+}
+.platforms__item:hover svg {
+  transform: scale(1.12);
+}
+
+/* ----- Discografía: escenario con vinilo -----
+   Un lanzamiento a la vez. La portada es la funda y el vinilo (con la portada
+   como etiqueta) sale de ella al elegirlo y un poco más al pasar el cursor.
+   Cada lanzamiento aporta su color, sacado de su portada. */
+.disc {
+  --accent: #c9a24a;
+  --glow: 179, 54, 27;
+}
+.disc[data-release="sie"] {
+  --accent: #a493e6;
+  --glow: 120, 100, 220;
+}
+.disc[data-release="ven"] {
+  --accent: #a6c93a;
+  --glow: 140, 190, 40;
+}
+.disc__stage {
+  display: grid;
+  gap: 2.5rem;
+  padding: clamp(1.2rem, 3vw, 2.5rem);
+  border: 1px solid var(--c-line);
+  background: radial-gradient(ellipse 60% 80% at 20% 45%, rgba(var(--glow), 0.2), transparent 70%), var(--c-bg);
+  transition: background 0.6s ease;
+}
+@media (min-width: 850px) {
+  .disc__stage {
+    grid-template-columns: 5fr 6fr;
+    gap: 3rem;
+    align-items: center;
+  }
+}
+.disc__record {
+  position: relative;
+  width: 76%;
+  aspect-ratio: 1;
+}
+.disc__sleeve {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  box-shadow: 8px 14px 40px rgba(0, 0, 0, 0.75);
+}
+.disc__record .discography__badge {
+  z-index: 2;
+}
+.disc__vinyl {
+  position: absolute;
+  inset: 3%;
+  border-radius: 50%;
+  background:
+    conic-gradient(from 30deg, transparent 0 8%, rgba(255, 255, 255, 0.09) 12%, transparent 18% 50%, rgba(255, 255, 255, 0.07) 62%, transparent 68%),
+    repeating-radial-gradient(circle, #141414 0 2px, #262626 2px 3px);
+  box-shadow: 0 0 0 2px #2c2c2c, 6px 10px 28px rgba(0, 0, 0, 0.7);
+  transform: translateX(28%) rotate(0deg);
+  transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation: vinylOut 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.disc__vinyl img {
+  position: absolute;
+  inset: 32%;
+  width: 36%;
+  height: 36%;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 3px #0b0b0b;
+}
+.disc__vinyl::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4%;
+  height: 4%;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: var(--c-bg);
+}
+.disc__record:hover .disc__vinyl {
+  transform: translateX(42%) rotate(160deg);
+}
+@keyframes vinylOut {
+  from {
+    transform: translateX(0) rotate(-120deg);
+  }
+}
+.disc__type {
+  font-family: "Cinzel", serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.disc__title {
+  font-family: "Cinzel", serif;
+  font-weight: 900;
+  font-size: clamp(1.5rem, 3.5vw, 2.4rem);
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  color: var(--c-bone-light);
+  margin: 0.4rem 0 1.2rem;
+}
+.disc__info:not([hidden]) {
+  animation: discIn 0.5s ease;
+}
+@keyframes discIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.disc__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.disc__player {
+  display: block;
+  width: 100%;
+  height: 152px;
+  margin-top: 1.6rem;
+  border: 0;
+  border-radius: 12px;
+  background: #000;
+}
+.disc__picker {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.disc__pick {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 0.9rem;
+  align-items: center;
+  padding: 0.6rem;
+  text-align: left;
+  color: var(--c-text);
+  background: var(--c-bg);
+  border: 1px solid var(--c-line);
+  cursor: pointer;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+.disc__pick img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  filter: grayscale(0.6) brightness(0.7);
+  transition: filter 0.3s ease;
+}
+.disc__pick small {
+  display: block;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--c-ash);
+}
+.disc__pick strong {
+  display: block;
+  font-family: "Cinzel", serif;
+  font-size: 0.85rem;
+  line-height: 1.25;
+  color: var(--c-bone-light);
+}
+.disc__pick:hover {
+  border-color: var(--c-ash);
+}
+.disc__pick:hover img,
+.disc__pick[aria-selected="true"] img {
+  filter: none;
+}
+.disc__pick[aria-selected="true"] {
+  border-color: var(--accent);
+  background: var(--c-bg-soft);
+}
+.disc__pick[aria-selected="true"] small {
+  color: var(--accent);
+}
+.disc__pick:focus-visible {
+  outline: 2px solid var(--c-bone-light);
+  outline-offset: 2px;
+}
+@media (max-width: 700px) {
+  .disc__pick {
+    grid-template-columns: 1fr;
+    padding: 0.4rem;
+    text-align: center;
+  }
+  .disc__pick img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+  }
+  .disc__pick strong {
+    font-size: 0.7rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .disc__vinyl,
+  .disc__info:not([hidden]) {
+    animation: none;
+    transition: none;
+  }
+}
+.discography__badge {
+  position: absolute;
+  top: 0.8rem;
+  left: 0.8rem;
+  padding: 0.3rem 0.7rem;
+  font-family: "Cinzel", serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--c-bg);
+  background: var(--c-gold);
+}
+
+
+.videos__grid {
+  display: grid;
+  gap: 2rem;
+}
+@media (min-width: 900px) {
+  .videos__grid {
+    grid-template-columns: 1.6fr 1fr;
+    align-items: start;
+  }
+}
+@media (min-width: 900px) {
+  .videos__item--featured {
+    grid-row: span 2;
+  }
+}
+.videos__item figcaption {
+  margin-top: 0.8rem;
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-bone-light);
+}
+.videos__item figcaption span {
+  display: block;
+  font-family: "Inter", system-ui, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 0.85rem;
+  color: var(--c-ash);
+}
+.videos__more {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.yt {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16/9;
+  padding: 0;
+  border: 1px solid var(--c-line);
+  background: #000 var(--thumb) center/cover no-repeat;
+  cursor: pointer;
+  overflow: hidden;
+}
+.yt::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 50%, rgba(0, 0, 0, 0.7));
+}
+.yt__play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 72px;
+  height: 72px;
+  margin: -36px 0 0 -36px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 2px solid var(--c-bone-light);
+  background: rgba(110, 26, 18, 0.85);
+  transition: transform 0.35s ease, background 0.35s ease, box-shadow 0.35s ease;
+}
+.yt__play svg {
+  width: 28px;
+  height: 28px;
+  fill: var(--c-bone-light);
+  margin-left: 4px;
+}
+.yt:hover .yt__play, .yt:focus-visible .yt__play {
+  transform: scale(1.1);
+  background: var(--c-gold);
+  box-shadow: 0 0 26px rgba(201, 162, 74, 0.55);
+}
+.yt:focus-visible {
+  outline: 2px solid var(--c-bone-light);
+  outline-offset: 3px;
+}
+.yt iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Foto de la banda: franja panorámica centrada en los rostros (deja fuera
+   el logo de la foto), bordes fundidos con el fondo y nombres superpuestos.
+   Al hacer clic se abre completa en un lightbox. */
+.bio__photo {
+  position: relative;
+  aspect-ratio: 21/9;
+  overflow: hidden;
+  background: #000;
+}
+@media (max-width: 599px) {
+  .bio__photo {
+    aspect-ratio: 4/3;
+  }
+}
+.bio__photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, var(--c-bg) 0%, transparent 14%, transparent 86%, var(--c-bg) 100%), linear-gradient(180deg, transparent 55%, rgba(13, 10, 8, 0.92) 100%);
+}
+.bio__zoom {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+}
+.bio__zoom:focus-visible {
+  outline: 2px solid var(--c-bone-light);
+  outline-offset: -4px;
+}
+.bio__zoom img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 32%;
+  transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.bio__zoom:hover img {
+  transform: scale(1.03);
+}
+.bio__photo figcaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 1.2rem;
+  z-index: 1;
+  padding-inline: 1rem;
+  text-align: center;
+  font-family: "Cinzel", serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--c-bone);
+  pointer-events: none;
+}
+@media (max-width: 599px) {
+  .bio__photo figcaption {
+    bottom: 0.8rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+  }
+}
+.bio__photo figcaption small {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.65rem;
+  color: var(--c-gold);
+}
+
+.lightbox {
+  margin: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  max-width: 96vw;
+  max-height: 92vh;
+  overflow: visible;
+}
+.lightbox::backdrop {
+  background: rgba(5, 3, 2, 0.92);
+  backdrop-filter: blur(4px);
+}
+.lightbox img {
+  max-width: 96vw;
+  max-height: 88vh;
+  width: auto;
+  border: 1px solid var(--c-line);
+}
+.lightbox__close {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  width: 44px;
+  height: 44px;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--c-bone-light);
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--c-line);
+  cursor: pointer;
+}
+.lightbox__close:hover, .lightbox__close:focus-visible {
+  color: var(--c-gold);
+  border-color: var(--c-gold);
+  outline: none;
+}
+
+/* Alineación bajo la foto, en el mismo orden en que aparecen. Con ratón, al
+   pasar por un nombre la foto se oscurece salvo una luz sobre esa persona.
+   --fx/--fy son la posición de cada rostro dentro del recorte 21:9; se
+   registran con @property para que la luz se deslice entre nombres. */
+@property --fx {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+@property --fy {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 25%;
+}
+.bio__lineup {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  border-bottom: 1px solid var(--c-line);
+}
+.bio__lineup li {
+  padding: 1.2rem 0.5rem;
+  text-align: center;
+  border-top: 2px solid transparent;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+.bio__lineup strong {
+  display: block;
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  color: var(--c-bone-light);
+}
+.bio__lineup span {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--c-gold);
+}
+@media (max-width: 699px) {
+  .bio__lineup {
+    grid-template-columns: 1fr;
+  }
+  .bio__lineup li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.8rem 0.2rem;
+    border-top: 0;
+    border-bottom: 1px dashed var(--c-line);
+  }
+  .bio__lineup li:last-child {
+    border-bottom: 0;
+  }
+  .bio__lineup strong {
+    display: inline;
+  }
+}
+@media (hover: hover) and (min-width: 600px) {
+  .bio__lineup li:hover {
+    border-top-color: var(--c-gold);
+    background: var(--c-bg-soft);
+  }
+  .bio__photo {
+    transition: --fx 0.45s ease, --fy 0.45s ease;
+  }
+  .bio__photo::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    background: radial-gradient(ellipse 11% 26% at var(--fx) var(--fy), transparent 40%, rgba(5, 3, 2, 0.8) 100%);
+  }
+  .bio__band:has(.bio__lineup li:hover) .bio__photo::before {
+    opacity: 1;
+  }
+  .bio__band:has(.bio__lineup li:nth-child(1):hover) .bio__photo { --fx: 25%; --fy: 22%; }
+  .bio__band:has(.bio__lineup li:nth-child(2):hover) .bio__photo { --fx: 42%; --fy: 28%; }
+  .bio__band:has(.bio__lineup li:nth-child(3):hover) .bio__photo { --fx: 55%; --fy: 18%; }
+  .bio__band:has(.bio__lineup li:nth-child(4):hover) .bio__photo { --fx: 54%; --fy: 33%; }
+  .bio__band:has(.bio__lineup li:nth-child(5):hover) .bio__photo { --fx: 67%; --fy: 20%; }
+}
+
+.bio__text {
+  display: grid;
+  gap: 0 3rem;
+  margin-top: 3.5rem;
+}
+@media (min-width: 900px) {
+  .bio__text {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.bio__text p {
+  margin-bottom: 1.2rem;
+}
+.bio__text > p:first-child::first-letter {
+  float: left;
+  font-family: "Cinzel", serif;
+  font-size: 3.6rem;
+  line-height: 0.9;
+  padding-right: 0.5rem;
+  color: var(--c-gold);
+}
+.tour__list {
+  border-top: 1px solid var(--c-line);
+}
+.tour__empty {
+  max-width: 640px;
+  margin-inline: auto;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  border: 1px dashed var(--c-line);
+}
+.tour__empty p {
+  margin-bottom: 1.5rem;
+}
+.tour__empty-title {
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-bone-light);
+  margin-bottom: 0.6rem !important;
+}
+.tour__empty-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.8rem;
+}
+.tour__item {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 0.5rem 1.5rem;
+  align-items: center;
+  padding: 1.5rem 0.5rem;
+  border-bottom: 1px solid var(--c-line);
+  transition: background 0.35s ease;
+}
+.tour__item:hover {
+  background: rgba(110, 26, 18, 0.08);
+}
+@media (min-width: 900px) {
+  .tour__item {
+    grid-template-columns: 100px 1fr 1fr auto;
+    padding-inline: 1rem;
+  }
+}
+.tour__item.is-soldout .btn {
+  border-color: var(--c-ash);
+  background: transparent;
+  color: var(--c-ash);
+  pointer-events: none;
+}
+.tour__date {
+  grid-row: span 2;
+  text-align: center;
+  font-family: "Cinzel", serif;
+  color: var(--c-bone-light);
+  line-height: 1.1;
+}
+.tour__date .day {
+  display: block;
+  font-size: 2rem;
+  font-weight: 900;
+}
+.tour__date .month {
+  display: block;
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  color: var(--c-gold);
+}
+@media (min-width: 900px) {
+  .tour__date {
+    grid-row: auto;
+  }
+}
+.tour__city {
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  color: var(--c-bone-light);
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+}
+.tour__venue {
+  color: var(--c-ash);
+  font-size: 0.95rem;
+}
+.tour__cta {
+  grid-column: 2;
+  justify-self: start;
+  margin-top: 0.5rem;
+}
+@media (min-width: 900px) {
+  .tour__cta {
+    grid-column: auto;
+    justify-self: end;
+    margin-top: 0;
+  }
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.6rem;
+  padding: 6rem 1rem 3.5rem;
+  text-align: center;
+  background: var(--c-bg);
+  border-top: 3px solid var(--c-blood);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+/* Fondo: portada de «Incorruptible Cadavérico» (ya en caché por la
+   discografía). La portada es pequeña (642 px), así que va bajo
+   un velo oscuro que la deja como atmósfera y mantiene el
+   texto legible; arriba se funde con la sección anterior. */
+.footer::before,
+.footer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.footer::before {
+  background: url("../img/incorruptible-cadaverico.jpg") center 47% / cover no-repeat;
+  filter: saturate(0.9);
+}
+@media (max-width: 699px) {
+  /* En vertical se ve la portada entera: se agranda y se ancla abajo para
+     recortar su logo, que competiría con el del pie. */
+  .footer::before {
+    background-size: auto 125%;
+    background-position: 45% 100%;
+  }
+  .footer::after {
+    --veil: 80% 55%;
+  }
+}
+.footer::after {
+  background:
+    radial-gradient(ellipse var(--veil, 34% 65%) at 50% 52%, rgba(13, 10, 8, 0.86) 0%, rgba(13, 10, 8, 0.72) 55%, rgba(13, 10, 8, 0.55) 100%),
+    linear-gradient(180deg, var(--c-bg) 0%, rgba(13, 10, 8, 0.75) 25%, rgba(13, 10, 8, 0.15) 50%, rgba(13, 10, 8, 0.15) 75%, var(--c-bg) 100%);
+}
+.footer__logo {
+  width: min(320px, 70vw);
+  opacity: 0.92;
+  filter: var(--logo-tint) brightness(1.05);
+}
+.footer__contact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+.footer__contact p {
+  color: var(--c-text);
+  font-size: 0.9rem;
+}
+.footer__label {
+  font-family: "Cinzel", serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--c-bone-light);
+}
+.footer__mail {
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--c-bone-light);
+  word-break: break-all;
+  transition: color 0.2s ease;
+}
+.footer__mail:hover {
+  color: var(--c-gold);
+}
+.footer__social {
+  display: flex;
+  gap: 0.8rem;
+}
+.footer__social a {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  color: var(--c-bone);
+  background: rgba(13, 10, 8, 0.6);
+  border: 1px solid var(--c-line);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.footer__social a:hover {
+  border-color: var(--c-gold);
+  color: var(--c-gold);
+}
+.footer__social svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+.footer__copy {
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  color: var(--c-text);
+}
+.has-player .footer {
+  padding-bottom: 9rem;
+}
+.footer__replay {
+  padding: 0.7rem 1.3rem;
+  font-family: "Cinzel", serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--c-gold);
+  background: rgba(13, 10, 8, 0.6);
+  border: 1px solid var(--c-line);
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.footer__replay:hover, .footer__replay:focus-visible {
+  color: var(--c-bone-light);
+  border-color: var(--c-gold);
+  outline: none;
+}
+
+.now-playing {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 150;
+  width: min(360px, 100vw - 2rem);
+  padding: 0.5rem 0.5rem 0.5rem 0.75rem;
+  background: rgba(13, 10, 8, 0.94);
+  border: 1px solid var(--c-line);
+  border-left: 3px solid var(--c-gold);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+}
+.now-playing.is-offstage {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+}
+.now-playing:not(.is-offstage) {
+  animation: slideIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.now-playing__spotify {
+  padding-right: 1.6rem;
+}
+.now-playing__spotify iframe {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-radius: 10px;
+}
+.now-playing__tap {
+  display: none;
+  margin-bottom: 0.4rem;
+  font-family: "Cinzel", serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--c-gold);
+}
+.now-playing.needs-tap {
+  animation: tapPulse 1.6s ease-in-out infinite;
+}
+.now-playing.needs-tap .now-playing__tap {
+  display: block;
+}
+.now-playing__close {
+  position: absolute;
+  top: 0.3rem;
+  right: 0.3rem;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  background: none;
+  color: var(--c-ash);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.now-playing__close:hover {
+  color: var(--c-bone-light);
+}
+.now-playing__close:focus-visible {
+  outline: 2px solid var(--c-bone-light);
+}
+
+.footer__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.7rem;
+}
+
+/* ----- Minijuego: El Péndulo ----- */
+.tour__game {
+  margin-top: 1.8rem;
+  padding: 0.3rem 0;
+  font-family: "Cinzel", serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--c-gold);
+  background: none;
+  border: 0;
+  border-bottom: 1px dashed var(--c-line);
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.tour__game:hover, .tour__game:focus-visible {
+  color: var(--c-bone-light);
+  border-color: var(--c-gold);
+  outline: none;
+}
+
+.game {
+  width: min(440px, 100vw - 2rem);
+  max-height: 100dvh;
+  margin: auto;
+  padding: 2.8rem 1.5rem 2rem;
+  text-align: center;
+  color: var(--c-text);
+  background: radial-gradient(ellipse at 50% 0%, rgba(110, 26, 18, 0.35), transparent 60%), var(--c-bg);
+  border: 1px solid var(--c-line);
+  border-top: 3px solid var(--c-gold);
+  overflow: auto;
+}
+.game[open] {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.game::backdrop {
+  background: rgba(5, 3, 2, 0.92);
+  backdrop-filter: blur(4px);
+}
+@media (max-width: 599px) {
+  .game {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100dvh;
+    border: 0;
+    border-top: 3px solid var(--c-gold);
+  }
+}
+.game__close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  width: 40px;
+  height: 40px;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--c-ash);
+  background: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+.game__close:hover, .game__close:focus-visible {
+  color: var(--c-gold);
+  border-color: var(--c-gold);
+  outline: none;
+}
+.game__kicker {
+  font-family: "Cinzel", serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--c-gold);
+}
+.game__title {
+  margin: 0.4rem 0 1rem;
+  font-family: "Cinzel", serif;
+  font-weight: 900;
+  font-size: clamp(1.8rem, 6vw, 2.4rem);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-bone-light);
+}
+.game__text {
+  margin-bottom: 1.6rem;
+  font-size: 0.95rem;
+}
+.game__best {
+  margin-top: 1.2rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  color: var(--c-ash);
+}
+.game__best strong {
+  color: var(--c-gold);
+}
+.game__new {
+  margin-left: 0.4rem;
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  color: var(--c-gold-light);
+}
+.game__screen--play {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.game__hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.game__score {
+  font-family: "Cinzel", serif;
+  font-weight: 900;
+  font-size: 2rem;
+  color: var(--c-bone-light);
+}
+.game__lives span {
+  margin-left: 0.35rem;
+  font-size: 1.2rem;
+  color: var(--c-ember);
+  transition: opacity 0.3s ease, color 0.3s ease;
+}
+.game__lives .is-lost {
+  opacity: 0.25;
+  color: var(--c-ash);
+}
+.game__stage {
+  position: relative;
+}
+.game__stage.is-shaking {
+  animation: gameShake 0.35s ease;
+}
+.game__svg {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+.game__track, .game__zone {
+  fill: none;
+  stroke-width: 10;
+  stroke-linecap: round;
+}
+.game__track {
+  stroke: var(--c-line);
+}
+.game__zone {
+  stroke: var(--c-gold);
+  filter: drop-shadow(0 0 6px rgba(201, 162, 74, 0.6));
+}
+.game__rod {
+  stroke: var(--c-ash);
+  stroke-width: 1.5;
+}
+.game__bob {
+  fill: var(--c-blood);
+  stroke: var(--c-gold-light);
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 8px rgba(179, 54, 27, 0.7));
+}
+.game__bob-core {
+  fill: var(--c-gold-light);
+}
+.game__pivot {
+  fill: var(--c-gold);
+}
+.game__feedback {
+  position: absolute;
+  inset: 34% 0 auto;
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0;
+  pointer-events: none;
+}
+.game__feedback.is-on {
+  animation: feedbackPop 0.7s ease-out;
+}
+.game__feedback.is-perfect {
+  color: var(--c-gold-light);
+}
+.game__feedback.is-hit {
+  color: var(--c-bone);
+}
+.game__feedback.is-miss {
+  color: var(--c-ember);
+}
+.game__hint {
+  margin-top: 0.5rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-ash);
+}
+.game__final strong {
+  display: block;
+  margin: 0.6rem 0 0;
+  font-family: "Cinzel", serif;
+  font-weight: 900;
+  font-size: 4rem;
+  line-height: 1;
+  color: var(--c-gold-light);
+}
+#gameAgain {
+  margin-top: 1.2rem;
+}
+.game__promo {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--c-line);
+}
+.game__promo-text {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+.game__promo-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.7rem;
+}
+
+/* ----- Chat con la banda (Telegram) ----- */
+.chat-fab {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 140;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  color: var(--c-gold);
+  background: rgba(13, 10, 8, 0.94);
+  border: 1px solid var(--c-gold);
+  border-radius: 50%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: bottom 0.4s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+.chat-fab[hidden] {
+  display: none;
+}
+.chat-fab svg {
+  width: 24px;
+  height: 24px;
+}
+.chat-fab:hover, .chat-fab:focus-visible, .chat-fab[aria-expanded=true] {
+  color: var(--c-bone-light);
+  box-shadow: 0 0 18px rgba(201, 162, 74, 0.55);
+  outline: none;
+}
+.chat-fab__dot {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  background: var(--c-ember);
+  border: 2px solid var(--c-bg);
+  border-radius: 50%;
+}
+/* Con el reproductor de Spotify visible, el botón sube por encima de él */
+.has-player .chat-fab {
+  bottom: calc(1rem + 124px);
+}
+
+.chat {
+  position: fixed;
+  right: 1rem;
+  bottom: calc(1rem + 64px);
+  z-index: 160;
+  display: flex;
+  flex-direction: column;
+  width: min(360px, 100vw - 2rem);
+  height: min(520px, 100dvh - 120px);
+  background: var(--c-bg);
+  border: 1px solid var(--c-line);
+  border-top: 3px solid var(--c-gold);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  animation: slideIn 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.chat[hidden] {
+  display: none;
+}
+.has-player .chat {
+  bottom: calc(1rem + 124px + 64px);
+  height: min(520px, 100dvh - 240px);
+}
+/* Móvil: hoja inferior a todo lo ancho; el botón se oculta mientras está abierta */
+@media (max-width: 599px) {
+  .chat, .has-player .chat {
+    inset: auto 0 0;
+    width: 100%;
+    height: min(85dvh, 640px);
+    border-inline: 0;
+  }
+  .chat-open .chat-fab {
+    display: none;
+  }
+}
+.chat__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid var(--c-line);
+}
+.chat__title {
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-bone-light);
+}
+.chat__sub {
+  font-size: 0.72rem;
+  color: var(--c-ash);
+}
+.chat__close {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--c-ash);
+  background: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+.chat__close:hover, .chat__close:focus-visible {
+  color: var(--c-gold);
+  border-color: var(--c-gold);
+  outline: none;
+}
+.chat__log {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.chat__intro {
+  margin-bottom: 0.4rem;
+  padding: 0.8rem;
+  font-size: 0.82rem;
+  color: var(--c-ash);
+  border: 1px dashed var(--c-line);
+}
+.chat__msg {
+  max-width: 85%;
+  padding: 0.55rem 0.8rem;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.chat__msg p {
+  white-space: pre-wrap;
+}
+.chat__msg--me {
+  align-self: flex-end;
+  color: var(--c-bone-light);
+  background: rgba(110, 26, 18, 0.55);
+  border: 1px solid rgba(179, 54, 27, 0.4);
+}
+.chat__msg--band {
+  align-self: flex-start;
+  color: var(--c-bone);
+  background: var(--c-bg-soft);
+  border-left: 2px solid var(--c-gold);
+}
+.chat__who {
+  display: block;
+  margin-bottom: 0.2rem;
+  font-family: "Cinzel", serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--c-gold);
+}
+.chat__status {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.7rem;
+  font-style: italic;
+  color: var(--c-ash);
+}
+.chat__msg.is-failed .chat__status {
+  color: #e0806a;
+}
+.chat__form {
+  padding: 0.7rem;
+  border-top: 1px solid var(--c-line);
+}
+.chat__captcha:empty {
+  display: none;
+}
+.chat__captcha {
+  margin-bottom: 0.5rem;
+}
+.chat__name {
+  display: block;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  padding: 0.55rem 0.7rem;
+  font: 16px/1.4 "Inter", system-ui, sans-serif;
+  color: var(--c-bone-light);
+  background: var(--c-bg-soft);
+  border: 1px solid var(--c-line);
+  outline: none;
+}
+.chat__name[hidden] {
+  display: none;
+}
+.chat__name:focus {
+  border-color: var(--c-gold);
+}
+.chat__name::placeholder {
+  color: var(--c-ash);
+}
+.chat__row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+.chat__input {
+  flex: 1;
+  max-height: 120px;
+  padding: 0.6rem 0.7rem;
+  font: 16px/1.4 "Inter", system-ui, sans-serif; /* 16px: iOS no hace zoom al escribir */
+  color: var(--c-bone-light);
+  background: var(--c-bg-soft);
+  border: 1px solid var(--c-line);
+  resize: none;
+  outline: none;
+}
+.chat__input:focus {
+  border-color: var(--c-gold);
+}
+.chat__input::placeholder {
+  color: var(--c-ash);
+}
+.chat__send {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  color: var(--c-bone-light);
+  background: var(--c-blood);
+  border: 1px solid var(--c-gold);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.chat__send:hover {
+  background: var(--c-ember);
+}
+.chat__send:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+.chat__send:focus-visible {
+  outline: 2px solid var(--c-bone-light);
+}
+.chat__send svg {
+  width: 18px;
+  height: 18px;
+}
+.chat__note {
+  padding: 0 1rem 0.7rem;
+  font-size: 0.68rem;
+  color: var(--c-ash);
+}
+
+@keyframes feedbackPop {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.9);
+  }
+  20% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-14px);
+  }
+}
+@keyframes gameShake {
+  20%, 60% {
+    transform: translateX(-6px);
+  }
+  40%, 80% {
+    transform: translateX(6px);
+  }
+}
+
+@keyframes naveReveal {
+  0% {
+    opacity: 0;
+    transform: scale(1.18);
+    filter: blur(14px) saturate(1.2) brightness(0);
+  }
+  45% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.04);
+    filter: blur(5px) saturate(1.2) brightness(0.38);
+  }
+}
+@keyframes relicReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(18px) scale(1.06);
+    filter: var(--logo-tint) brightness(0) blur(10px);
+  }
+  35% {
+    opacity: 1;
+    filter: var(--logo-tint) brightness(0.5) blur(3px);
+  }
+  42% {
+    filter: var(--logo-tint) brightness(0.25) blur(2px);
+  }
+  50% {
+    filter: var(--logo-tint) brightness(1.1) blur(1px);
+  }
+  56% {
+    filter: var(--logo-tint) brightness(0.6) blur(0);
+  }
+  70% {
+    transform: none;
+    filter: var(--logo-tint) brightness(1.7) drop-shadow(0 0 40px var(--c-gold));
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+    filter: var(--logo-tint) brightness(1.05) drop-shadow(0 0 18px rgba(201, 162, 74, 0.45));
+  }
+}
+@keyframes candleGlow {
+  0%, 100% {
+    filter: var(--logo-tint) brightness(1.05) drop-shadow(0 0 16px rgba(201, 162, 74, 0.4));
+  }
+  20% {
+    filter: var(--logo-tint) brightness(0.95) drop-shadow(0 0 10px rgba(179, 54, 27, 0.5));
+  }
+  45% {
+    filter: var(--logo-tint) brightness(1.12) drop-shadow(0 0 28px rgba(201, 162, 74, 0.6));
+  }
+  70% {
+    filter: var(--logo-tint) brightness(1) drop-shadow(0 0 18px rgba(179, 54, 27, 0.45));
+  }
+}
+@keyframes raysIn {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes raysSway {
+  from {
+    transform: rotate(-3deg);
+  }
+  to {
+    transform: rotate(3deg);
+  }
+}
+@keyframes dustRise {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  15% {
+    opacity: var(--o, 0.8);
+  }
+  85% {
+    opacity: var(--o, 0.8);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--x, 20px), -105vh);
+  }
+}
+@keyframes inkIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+    filter: blur(6px);
+    color: var(--c-ember);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+@keyframes sandTop {
+  from {
+    transform: scaleY(1);
+  }
+  to {
+    transform: scaleY(0);
+  }
+}
+@keyframes sandBottom {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+@keyframes sandStream {
+  0%, 95% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes gatePulse {
+  0%, 100% {
+    box-shadow: 0 0 0 rgba(201, 162, 74, 0);
+  }
+  50% {
+    box-shadow: 0 0 26px rgba(201, 162, 74, 0.45);
+  }
+}
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes tapPulse {
+  0%, 100% {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  }
+  50% {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 24px rgba(201, 162, 74, 0.5);
+  }
+}
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes bob {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

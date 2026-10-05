@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0a08; --soft: #16110d; --card: #1c1611; --line: #2f261d; --ash: #857867; --text: #b5aa94;
+    --bone: #ece3cf; --gold: #c9a24a; --gold-l: #f0d58a; --blood: #6e1a12; --ember: #b3361b;
+    --cf: #f38020; --tg: #2aabee; --gh: #8b949e;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { width: 1900px; height: 1200px; background: radial-gradient(ellipse at 50% 0%, #2a0c08 0%, var(--bg) 55%); color: var(--text); font: 15px/1.4 Inter, sans-serif; position: relative; overflow: hidden; }
+  h1 { position: absolute; left: 40px; top: 28px; font: 900 34px Cinzel, serif; letter-spacing: .1em; color: var(--bone); text-transform: uppercase; }
+  h1 small { display: block; font: 400 15px Inter, sans-serif; letter-spacing: .02em; text-transform: none; color: var(--ash); margin-top: 4px; }
+  .zone { position: absolute; border: 1px solid var(--line); background: rgba(22,17,13,.92); padding: 18px; }
+  .zone > .head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .zone > .head b { font: 700 18px Cinzel, serif; letter-spacing: .08em; color: var(--bone); text-transform: uppercase; }
+  .zone > .head span:not(.tag) { font-size: 12px; color: var(--ash); }
+  .tag { font: 700 10px Inter; letter-spacing: .12em; text-transform: uppercase; padding: 3px 7px; border-radius: 3px; color: #0d0a08; }
+  .t-gold { background: var(--gold); } .t-cf { background: var(--cf); } .t-tg { background: var(--tg); } .t-gh { background: var(--gh); } .t-ext { background: var(--ash); }
+  .box { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--gold); padding: 9px 12px; margin-bottom: 8px; }
+  .box b { color: var(--bone); font-weight: 600; }
+  .box p { font-size: 12.5px; color: var(--ash); margin-top: 2px; }
+  .box.new { border-left-color: var(--ember); background: linear-gradient(90deg, rgba(110,26,18,.35), var(--card) 60%); }
+  .box.new b::after { content: "NUEVO"; margin-left: 8px; font: 700 9px Inter; letter-spacing: .15em; color: var(--gold-l); border: 1px solid var(--gold); padding: 1px 5px; vertical-align: 2px; }
+  .cf .box { border-left-color: var(--cf); } .tgz .box { border-left-color: var(--tg); } .gh .box { border-left-color: var(--gh); } .ext .box { border-left-color: var(--ash); }
+  code { font: 12px Consolas, monospace; color: var(--gold-l); }
+  .mono { font: 12px Consolas, monospace; color: var(--text); }
+  .lbl { position: absolute; font-size: 13px; color: var(--bone); background: var(--bg); padding: 2px 8px; border: 1px solid var(--line); white-space: nowrap; }
+  .lbl i { font-style: normal; color: var(--ash); font-size: 11.5px; display: block; }
+  .n { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--gold); color: #0d0a08; font: 700 12px Inter; margin-right: 6px; vertical-align: 1px; }
+  .sec { position: absolute; left: 40px; right: 40px; top: 1040px; height: 130px; border: 1px solid var(--line); border-top: 3px solid var(--gold); background: rgba(22,17,13,.92); display: grid; grid-template-columns: 210px repeat(5, 1fr); gap: 18px; padding: 18px 22px; }
+  .sec h3 { font: 700 16px Cinzel, serif; letter-spacing: .1em; color: var(--bone); text-transform: uppercase; align-self: center; }
+  .sec div b { display: block; color: var(--gold-l); font-size: 13px; margin-bottom: 3px; }
+  .sec div { font-size: 12.5px; color: var(--text); }
+  svg.arrows { position: absolute; inset: 0; pointer-events: none; }
+</style>
+</head>
+<body>
+<h1>Blessed Extinction · Arquitectura<small>Landing estática en GitHub Pages + chat bidireccional con Telegram vía Cloudflare · octubre 2026</small></h1>
+
+<!-- Navegador -->
+<div class="zone" id="zBrowser" style="left:40px; top:120px; width:470px; height:890px;">
+  <div class="head"><span class="tag t-gold">Cliente</span><b>Navegador</b><span>visitante · móvil / escritorio</span></div>
+  <div class="mono" style="margin-bottom:10px">index.html · css/styles.css · js/main.js</div>
+  <div class="box"><b>Idioma ES / EN</b><p>data-i18n en el HTML · diccionario EN en main.js</p></div>
+  <div class="box"><b>Intro (splash)</b><p>Sonido sintetizado con Web Audio · salida en vitral roto</p></div>
+  <div class="box"><b>Reproductor flotante</b><p>Spotify iframe API · suena al entrar</p></div>
+  <div class="box"><b>Discografía · Videos · Plataformas</b><p>Spotify embed · YouTube con fachada (carga al clic)</p></div>
+  <div class="box"><b>Linterna con parallax · Lightbox</b><p>Arte en «Escucha &amp; Sigue» · foto de la banda</p></div>
+  <div class="box new"><b>Minijuego «El Péndulo»</b><p>&lt;dialog&gt; · SVG + requestAnimationFrame · enlaces a YouTube/Spotify al final</p></div>
+  <div class="box new" id="chatW"><b>Widget de chat</b><p>Botón flotante + panel · nombre y Turnstile al 1.er mensaje · consulta cada 4 s (abierto) / 30 s (cerrado)</p></div>
+  <div class="box" style="border-left-color:var(--ash); margin-top:16px"><b>localStorage</b> <span style="font-size:12px;color:var(--ash)">(sólo en ese navegador)</span>
+    <p><code>be-lang</code> idioma · <code>be-pendulum-best</code> récord<br><code>be-chat-sid</code> id de conversación · <code>be-chat-seen</code> último leído<br><code>be-chat-name</code> nombre del visitante</p></div>
+</div>
+
+<!-- GitHub Pages -->
+<div class="zone gh" style="left:640px; top:120px; width:360px; height:250px;">
+  <div class="head"><span class="tag t-gh">Hosting</span><b>GitHub Pages</b></div>
+  <div class="box" id="ghFiles"><b>Archivos estáticos (HTTPS)</b><p>repo <code>JhonGamesRepo/landings-test</code></p></div>
+  <div class="box"><b>img/</b><p>portadas, arte, logo, favicon.svg</p></div>
+  <div style="font-size:12px;color:var(--ash)">Sin servidor ni secretos: todo es público</div>
+</div>
+
+<!-- Externos -->
+<div class="zone ext" style="left:640px; top:430px; width:360px; height:330px;">
+  <div class="head"><span class="tag t-ext">Terceros</span><b>Servicios embebidos</b></div>
+  <div class="box"><b>Google Fonts</b><p>Cinzel · Inter · UnifrakturMaguntia</p></div>
+  <div class="box" id="extSpotify"><b>Spotify</b><p>iframe API y reproductores embebidos</p></div>
+  <div class="box"><b>YouTube</b><p>youtube-nocookie.com · miniaturas i.ytimg.com</p></div>
+  <div class="box"><b>Cloudflare Turnstile (widget)</b><p>Se carga sólo al abrir el chat</p></div>
+</div>
+
+<!-- Local -->
+<div class="zone" style="left:640px; top:890px; width:360px; height:120px; border-style:dashed;">
+  <div class="head" style="margin-bottom:8px"><span class="tag t-ext">Dev</span><b style="font-size:14px">Prueba local</b></div>
+  <div style="font-size:12.5px">Página <code>:5500</code> (usa siempre el Worker local) · Worker <code>npm run dev</code> <code>:8787</code><br>Telegram simulado <code>npm run mock</code> <code>:8788</code></div>
+</div>
+
+<!-- Cloudflare -->
+<div class="zone cf" style="left:1100px; top:120px; width:400px; height:890px;">
+  <div class="head"><span class="tag t-cf">Backend</span><b>Cloudflare</b><span>plan gratuito</span></div>
+  <div class="box" id="ts" style="margin-bottom:34px"><b>Turnstile · siteverify</b><p>Confirma que el 1.er mensaje viene de una persona</p></div>
+  <div class="box new" id="worker" style="border-left-color:var(--cf); padding:12px 14px"><b>Worker «blessed-chat»</b><p style="margin-bottom:8px">carpeta <code>chat-worker-blessed/</code></p>
+    <div class="mono" style="line-height:1.75">
+      <code>POST /send</code> &nbsp;visitante → grupo<br>
+      <code>GET&nbsp; /poll</code> &nbsp;respuestas nuevas<br>
+      <code>POST /telegram</code> webhook de la banda<br>
+      <code>cron 04:17</code> &nbsp;borra lo de &gt; 30 días
+    </div>
+    <p style="margin-top:8px">CORS sólo jhongamesrepo.github.io · límites anti-spam</p>
+  </div>
+  <div class="box" id="d1" style="margin-top:56px"><b>Base de datos D1 «blessed-chat»</b>
+    <p style="line-height:1.7"><code>sessions</code> id = SHA-256(sid) · nº · nombre cifrado · ip_hash<br><code>messages</code> texto cifrado AES-256-GCM<br><code>tg_map</code> mensaje de Telegram → conversación<br><code>counters</code> numeración #1, #2…</p></div>
+  <div class="box" id="secrets" style="margin-top:34px; border-left-color:var(--ember)"><b>🔒 Secrets (cifrados por Cloudflare)</b>
+    <p><code>BOT_TOKEN</code> · <code>WEBHOOK_SECRET</code><br><code>TURNSTILE_SECRET</code> · <code>ENC_KEY</code></p></div>
+</div>
+
+<!-- Telegram -->
+<div class="zone tgz" id="zTg" style="left:1600px; top:120px; width:260px; height:520px;">
+  <div class="head"><span class="tag t-tg">Telegram</span></div>
+  <div class="box" id="tgApi"><b>Bot API</b><p>api.telegram.org</p></div>
+  <div class="box" id="tgBot" style="margin-top:70px"><b>Bot de la banda</b><p>Privacy mode activo: sólo ve respuestas a sus mensajes</p></div>
+  <div class="box" id="tgGroup" style="margin-top:70px"><b>Grupo «Blessed Extinction · Web»</b><p>Cada conversación llega como «🟢 #12 · Nombre» · integrantes responden con «Responder» · el bot marca 👍 lo enviado</p></div>
+</div>
+
+<svg class="arrows" id="arrows" viewBox="0 0 1900 1200"></svg>
+<div id="labels"></div>
+
+<!-- Seguridad -->
+<div class="sec">
+  <h3>🔒 Seguridad</h3>
+  <div><b>Sin credenciales en la web</b>El token del bot y las claves sólo existen como Secrets del Worker.</div>
+  <div><b>Cifrado en tránsito</b>HTTPS en todo el camino: GitHub Pages → Worker → Telegram.</div>
+  <div><b>Cifrado en reposo</b>Mensajes y nombres con AES-256-GCM. Id de visitante e IP sólo como hash SHA-256.</div>
+  <div><b>Contra abusos</b>Turnstile · CORS · 5 conversaciones/h por IP · 8 mensajes/5 min · webhook con secreto.</div>
+  <div><b>Retención y límite</b>Todo se borra a los 30 días. Telegram no es E2E: el widget pide no enviar datos sensibles.</div>
+</div>
+
+<script>
+const r = (id) => document.getElementById(id).getBoundingClientRect();
+const svg = document.getElementById('arrows');
+const labels = document.getElementById('labels');
+const C = { gold: '#c9a24a', tg: '#2aabee', ash: '#857867', ember: '#b3361b' };
+svg.innerHTML = '<defs>' + Object.entries(C).map(([k, c]) => `<marker id="m-${k}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="${c}"/></marker>`).join('') + '</defs>';
+const line = (d, color, { both = false, dash = '' } = {}) => {
+  svg.insertAdjacentHTML('beforeend', `<path d="${d}" fill="none" stroke="${C[color]}" stroke-width="2" ${dash ? `stroke-dasharray="${dash}"` : ''} marker-end="url(#m-${color})" ${both ? `marker-start="url(#m-${color})"` : ''}/>`);
+};
+const label = (x, y, html, sub = '', anchor = 'left') => {
+  const el = document.createElement('div');
+  el.className = 'lbl';
+  el.innerHTML = html + (sub ? `<i>${sub}</i>` : '');
+  labels.append(el);
+  const w = el.offsetWidth, h = el.offsetHeight;
+  el.style.left = (anchor === 'center' ? x - w / 2 : anchor === 'right' ? x - w : x) + 'px';
+  el.style.top = (y - h) + 'px';
+};
+const n = (k) => `<span class="n">${k}</span>`;
+const B = r('zBrowser'), files = r('ghFiles'), sp = r('extSpotify'), chat = r('chatW'), ts = r('ts'), w = r('worker'), d1 = r('d1'), sec = r('secrets'), T = r('zTg'), api = r('tgApi'), bot = r('tgBot'), grp = r('tgGroup');
+const gx = 640;
+// 1 GitHub Pages → navegador
+let y = files.top + files.height / 2;
+line(`M${gx - 2} ${y}H${B.right + 2}`, 'gold'); label((B.right + gx) / 2, y - 6, n(1) + 'HTML · CSS · JS', 'HTTPS', 'center');
+// 2 externos ↔ navegador
+y = sp.top + sp.height / 2;
+line(`M${B.right + 2} ${y}H${gx - 2}`, 'ash', { both: true, dash: '6 5' }); label((B.right + gx) / 2, y - 6, n(2) + 'embeds', 'al usarlos', 'center');
+// 3 widget de chat ↔ Worker
+y = chat.top + chat.height / 2;
+const wy = w.top + w.height / 2, xr = 1050;
+const yb = 836, xl = 575; // por debajo de «Servicios embebidos»
+line(`M${B.right + 2} ${y}H${xl}V${yb}H${xr}V${wy}H${w.left - 2}`, 'gold', { both: true });
+label(820, yb - 8, n(3) + 'POST /send · GET /poll', 'HTTPS · JSON · token Turnstile en el 1.er envío', 'center');
+// 4 Worker → Turnstile
+const tx = w.left + 110;
+line(`M${tx} ${w.top - 2}V${ts.bottom + 2}`, 'gold'); label(tx + 14, w.top - 4, n(4) + 'verifica');
+// 5 Worker → Telegram   6 Telegram → Worker
+const y5 = w.top + 50, y6 = w.bottom - 50;
+line(`M${w.right + 2} ${y5}H${T.left - 2}`, 'tg'); label((w.right + T.left) / 2, y5 - 6, n(5) + 'sendMessage', 'texto plano', 'center');
+line(`M${T.left - 2} ${y6}H${w.right + 2}`, 'tg'); label((w.right + T.left) / 2, y6 - 6, n(6) + 'webhook', '+ secret_token', 'center');
+// Bot API ↔ bot ↔ grupo
+const cx = api.left + api.width / 2;
+line(`M${cx} ${api.bottom + 2}V${bot.top - 2}`, 'tg', { both: true });
+line(`M${cx} ${bot.bottom + 2}V${grp.top - 2}`, 'tg', { both: true });
+// 7 Worker ↔ D1
+const dx = w.left + 60;
+line(`M${dx} ${w.bottom + 2}V${d1.top - 2}`, 'gold', { both: true }); label(dx + 16, d1.top - 12, n(7) + 'guarda cifrado · lee');
+// Secrets → Worker (por el borde derecho de la zona)
+const sx = w.right + 10, sy = sec.top + sec.height / 2;
+line(`M${sec.right + 2} ${sy}H${sx}V${w.bottom - 20}H${w.right + 2}`, 'ember', { dash: '4 4' });
+</script>
+</body>
+</html>

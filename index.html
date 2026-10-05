@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="meta.title">Blessed Extinction | Death Metal · Bogotá</title>
+  <meta name="description" data-i18n-attr="content:meta.description" content="Blessed Extinction — Death Metal desde 2013, Bogotá, Colombia. Nuevo single «Incorruptible Cadavérico» disponible en todas las plataformas.">
+  <meta property="og:title" content="Blessed Extinction — Incorruptible Cadavérico">
+  <meta property="og:description" content="Nuevo single disponible ya. Death Metal desde 2013, Bogotá, Colombia.">
+  <meta property="og:image" content="img/incorruptible-cadaverico.jpg">
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  <meta name="theme-color" content="#0d0a08">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@400;600&family=Nosifer&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="img/incorruptible-cadaverico.jpg">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="is-locked">
+
+  <!-- ===== SPLASH SCREEN (Incorruptible Cadavérico) ===== -->
+  <div class="splash is-waiting" id="splash" role="dialog" aria-label="Pantalla de bienvenida" data-i18n-attr="aria-label:splash.label">
+    <div class="splash__bg" aria-hidden="true"></div>
+    <div class="splash__rays" aria-hidden="true"></div>
+    <div class="splash__vignette" aria-hidden="true"></div>
+    <div class="splash__dust" id="splashDust" aria-hidden="true"></div>
+
+    <div class="splash__content">
+      <img class="splash__logo" src="img/logoverde-web.png" alt="Blessed Extinction">
+      <span class="splash__kicker" data-i18n="splash.kicker">Nuevo single</span>
+      <p class="splash__title" id="splashTitle">Incorruptible Cadavérico</p>
+      <div class="splash__ornament" aria-hidden="true">
+        <svg class="splash__hourglass" viewBox="0 0 24 38">
+          <path d="M3 1h18M3 37h18M5 1c0 9 6 12 6 18S5 28 5 37M19 1c0 9-6 12-6 18s6 9 6 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          <path class="sand-top" d="M7.2 8h9.6c-1 4-3.6 7-4.8 9.5C10.8 15 8.2 12 7.2 8z" fill="currentColor"/>
+          <line class="sand-stream" x1="12" y1="18" x2="12" y2="34" stroke="currentColor" stroke-width="0.8"/>
+          <path class="sand-bottom" d="M6 36.2c.6-3.6 4-6 6-6.6 2 .6 5.4 3 6 6.6z" fill="currentColor"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Puerta: el navegador sólo permite sonido tras un clic del usuario -->
+    <div class="splash__gate" id="splashGate">
+      <p class="splash__hint">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-9 9v6a3 3 0 0 0 3 3h2v-8H5v-1a7 7 0 0 1 14 0v1h-3v8h2a3 3 0 0 0 3-3v-6a9 9 0 0 0-9-9z"/></svg>
+        <span data-i18n="splash.hint">Experiencia con sonido · sube el volumen</span>
+      </p>
+      <button class="btn btn--ghost splash__enter" id="splashEnter" type="button" data-i18n="splash.enter">Entrar</button>
+      <button class="splash__mute" id="splashMute" type="button" data-i18n="splash.mute">Entrar sin sonido</button>
+    </div>
+
+    <!-- Idioma desde la pantalla inicial -->
+    <div class="lang splash__lang" role="group" aria-label="Idioma / Language">
+      <button class="lang__btn" type="button" data-lang="es" aria-pressed="true" lang="es" title="Español">ES</button>
+      <button class="lang__btn" type="button" data-lang="en" aria-pressed="false" lang="en" title="English">EN</button>
+    </div>
+
+    <button class="splash__skip" id="splashSkip" type="button" data-i18n="splash.skip">Saltar intro ⏭</button>
+  </div>
+
+  <!-- ===== HEADER ===== -->
+  <header class="header" id="header">
+    <div class="header__inner">
+      <a class="header__logo" href="#inicio" aria-label="Inicio" data-i18n-attr="aria-label:nav.home">
+        <img src="img/logoverde-web.png" alt="Blessed Extinction">
+      </a>
+
+      <div class="lang" role="group" aria-label="Idioma / Language">
+        <button class="lang__btn" type="button" data-lang="es" aria-pressed="true" lang="es" title="Español">ES</button>
+        <button class="lang__btn" type="button" data-lang="en" aria-pressed="false" lang="en" title="English">EN</button>
+      </div>
+
+      <button class="header__toggle" id="navToggle" type="button" aria-label="Abrir menú" data-i18n-attr="aria-label:nav.menu" aria-expanded="false" aria-controls="navList">&#9776;</button>
+
+      <nav class="nav" aria-label="Navegación principal" data-i18n-attr="aria-label:nav.label">
+        <ul class="nav__list" id="navList">
+          <li><a class="nav__link" href="#inicio" data-i18n="nav.home">Inicio</a></li>
+          <li><a class="nav__link" href="#musica" data-i18n="nav.music">Música</a></li>
+          <li><a class="nav__link" href="#videos" data-i18n="nav.videos">Videos</a></li>
+          <li><a class="nav__link" href="#escuchar" data-i18n="nav.listen">Escuchar</a></li>
+          <li><a class="nav__link" href="#banda" data-i18n="nav.band">Banda</a></li>
+          <li><a class="nav__link" href="#tour" data-i18n="nav.tour">Tour</a></li>
+          <li><a class="nav__link" href="#contacto" data-i18n="nav.contact">Contacto</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===== HERO ===== -->
+    <section class="hero" id="inicio">
+      <div class="hero__content">
+        <img class="hero__logo" src="img/logoverde-web.png" alt="Blessed Extinction">
+        <span class="hero__kicker" data-i18n="hero.kicker">Nuevo single</span>
+        <h1 class="hero__title">Incorruptible Cadavérico</h1>
+        <p class="hero__subtitle" data-i18n="hero.subtitle">Metal desde Bogotá, Colombia, desde 2013. El nuevo single ya está disponible con su lyric video oficial.</p>
+        <div class="hero__ctas">
+          <a class="btn btn--primary" href="#videos" data-i18n="hero.watch">Ver lyric video</a>
+          <a class="btn btn--ghost" href="https://open.spotify.com/album/6DzUlxrxQUV7wVz3yjdAvM" target="_blank" rel="noopener" data-i18n="hero.spotify">Escuchar en Spotify</a>
+        </div>
+      </div>
+      <a class="hero__scroll" href="#musica" aria-label="Bajar" data-i18n-attr="aria-label:hero.scroll">&#8964;</a>
+    </section>
+
+    <!-- ===== DISCOGRAFÍA ===== -->
+    <section class="section section--dark discography" id="musica">
+      <div class="section__inner">
+        <h2 class="section__title" data-i18n="disc.title">Discografía</h2>
+        <!-- Un lanzamiento a la vez: la portada es la funda y el vinilo sale de
+             ella; a la derecha, datos, enlaces y reproductor. Las portadas de
+             abajo eligen el lanzamiento. -->
+        <div class="disc" id="disc" data-release="inc">
+          <div class="disc__stage">
+            <div class="disc__records">
+              <div class="disc__record" data-release="inc">
+                <span class="disc__vinyl"><img src="img/incorruptible-cadaverico.jpg" alt="" width="642" height="645" loading="lazy"></span>
+                <img class="disc__sleeve" src="img/incorruptible-cadaverico.jpg" alt="Portada del single Incorruptible Cadavérico" data-i18n-attr="alt:disc.altInc" width="642" height="645" loading="lazy">
+                <span class="discography__badge" data-i18n="disc.new">Nuevo</span>
+              </div>
+              <div class="disc__record" data-release="sie" hidden>
+                <span class="disc__vinyl"><img src="img/siembra-de-cadaveres.jpg" alt="" width="640" height="640" loading="lazy"></span>
+                <img class="disc__sleeve" src="img/siembra-de-cadaveres.jpg" alt="Portada del single Siembra de Cadáveres" data-i18n-attr="alt:disc.altSie" width="640" height="640" loading="lazy">
+              </div>
+              <div class="disc__record" data-release="ven" hidden>
+                <span class="disc__vinyl"><img src="img/venganza-natural.jpg" alt="" width="642" height="644" loading="lazy"></span>
+                <img class="disc__sleeve" src="img/venganza-natural.jpg" alt="Portada del EP Venganza Natural" data-i18n-attr="alt:disc.altVen" width="642" height="644" loading="lazy">
+              </div>
+            </div>
+
+            <div class="disc__side">
+              <div class="disc__info" data-release="inc" id="disc-inc" role="tabpanel">
+                <span class="disc__type" data-i18n="disc.newSingle">Nuevo single</span>
+                <h3 class="disc__title">Incorruptible Cadavérico</h3>
+                <div class="disc__links">
+                  <a class="btn btn--primary btn--sm" href="https://www.youtube.com/watch?v=gRbIRqeaQFg" target="_blank" rel="noopener">Lyric video</a>
+                  <a class="btn btn--ghost btn--sm" href="https://open.spotify.com/album/6DzUlxrxQUV7wVz3yjdAvM" target="_blank" rel="noopener">Spotify</a>
+                </div>
+              </div>
+              <div class="disc__info" data-release="sie" id="disc-sie" role="tabpanel" hidden>
+                <span class="disc__type">Single</span>
+                <h3 class="disc__title">Siembra de Cadáveres</h3>
+                <div class="disc__links">
+                  <a class="btn btn--primary btn--sm" href="https://www.youtube.com/watch?v=ZekZaDuz7VE" target="_blank" rel="noopener" data-i18n="video.official">Video oficial</a>
+                  <a class="btn btn--ghost btn--sm" href="https://open.spotify.com/album/5VBHM5pahiAtTz59379KGE" target="_blank" rel="noopener">Spotify</a>
+                </div>
+              </div>
+              <div class="disc__info" data-release="ven" id="disc-ven" role="tabpanel" hidden>
+                <span class="disc__type">EP</span>
+                <h3 class="disc__title">Venganza Natural</h3>
+                <div class="disc__links">
+                  <a class="btn btn--primary btn--sm" href="https://music.youtube.com/playlist?list=OLAK5uy_nnMw1Wo_ns9KiGCXKrnx_9HjsG2vK_joU" target="_blank" rel="noopener">YouTube Music</a>
+                  <a class="btn btn--ghost btn--sm" href="https://open.spotify.com/album/5liQVrCpyRbKDM98VG7U1H" target="_blank" rel="noopener">Spotify</a>
+                  <a class="btn btn--ghost btn--sm" href="https://blessedextinction1.bandcamp.com/music" target="_blank" rel="noopener">Bandcamp</a>
+                </div>
+              </div>
+              <iframe class="disc__player" id="spotifyFrame" title="Reproductor de Spotify — Blessed Extinction" data-i18n-attr="title:player.title"
+                src="https://open.spotify.com/embed/album/6DzUlxrxQUV7wVz3yjdAvM?utm_source=generator&amp;theme=0"
+                height="152" loading="lazy"
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+            </div>
+          </div>
+
+          <div class="disc__picker" role="tablist" aria-label="Elegir lanzamiento" data-i18n-attr="aria-label:player.tabs">
+            <button class="disc__pick" type="button" role="tab" aria-selected="true" aria-controls="disc-inc" data-release="inc" data-album="6DzUlxrxQUV7wVz3yjdAvM">
+              <img src="img/incorruptible-cadaverico.jpg" alt="" width="64" height="64" loading="lazy">
+              <span><small>Single</small><strong>Incorruptible Cadavérico</strong></span>
+            </button>
+            <button class="disc__pick" type="button" role="tab" aria-selected="false" aria-controls="disc-sie" data-release="sie" data-album="5VBHM5pahiAtTz59379KGE">
+              <img src="img/siembra-de-cadaveres.jpg" alt="" width="64" height="64" loading="lazy">
+              <span><small>Single</small><strong>Siembra de Cadáveres</strong></span>
+            </button>
+            <button class="disc__pick" type="button" role="tab" aria-selected="false" aria-controls="disc-ven" data-release="ven" data-album="5liQVrCpyRbKDM98VG7U1H">
+              <img src="img/venganza-natural.jpg" alt="" width="64" height="64" loading="lazy">
+              <span><small>EP</small><strong>Venganza Natural</strong></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== VIDEOS ===== -->
+    <section class="section videos" id="videos">
+      <div class="section__inner">
+        <h2 class="section__title">Videos</h2>
+        <div class="videos__grid">
+          <figure class="videos__item videos__item--featured">
+            <button class="yt" type="button" data-yt="gRbIRqeaQFg" aria-label="Reproducir el lyric video de Incorruptible Cadavérico" data-i18n-attr="aria-label:video.playInc">
+              <span class="yt__play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4l15 8-15 8z"/></svg></span>
+            </button>
+            <figcaption>Incorruptible Cadavérico <span data-i18n="video.lyric">Lyric video oficial</span></figcaption>
+          </figure>
+          <figure class="videos__item">
+            <button class="yt" type="button" data-yt="ZekZaDuz7VE" aria-label="Reproducir el video oficial de Siembra de Cadáveres" data-i18n-attr="aria-label:video.playSie">
+              <span class="yt__play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4l15 8-15 8z"/></svg></span>
+            </button>
+            <figcaption>Siembra de Cadáveres <span data-i18n="video.official">Video oficial</span></figcaption>
+          </figure>
+          <figure class="videos__item">
+            <button class="yt" type="button" data-yt="aiB-G7MGvKw" aria-label="Reproducir el video de Desollados" data-i18n-attr="aria-label:video.playDes">
+              <span class="yt__play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4l15 8-15 8z"/></svg></span>
+            </button>
+            <figcaption>Desollados <span data-i18n="video.video">Video</span></figcaption>
+          </figure>
+        </div>
+        <p class="videos__more">
+          <a class="btn btn--ghost" href="https://www.youtube.com/@BlessedExtinction" target="_blank" rel="noopener" data-i18n="video.channel">Ver canal de YouTube</a>
+        </p>
+      </div>
+    </section>
+
+    <!-- ===== PLATAFORMAS & REDES ===== -->
+    <section class="section section--dark platforms" id="escuchar">
+      <!-- Linterna: la ilustración apenas se intuye y una luz que sigue al cursor la revela -->
+      <div class="lantern" id="lantern" aria-hidden="true">
+        <div class="lantern__img lantern__img--dim"></div>
+        <div class="lantern__light"><div class="lantern__img"></div></div>
+      </div>
+      <div class="section__inner">
+        <h2 class="section__title" data-i18n="platforms.title">Escucha &amp; Sigue</h2>
+
+        <h3 class="platforms__label" data-i18n="platforms.platforms">Plataformas</h3>
+        <ul class="platforms__grid">
+          <li>
+            <a class="platforms__item" href="https://open.spotify.com/artist/5pcjzTYxRRCxWtVyOKMhJ0" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.52 17.34c-.24.36-.66.48-1.02.24-2.82-1.74-6.36-2.1-10.56-1.14-.42.12-.78-.18-.9-.54-.12-.42.18-.78.54-.9 4.56-1.02 8.52-.6 11.64 1.32.42.18.48.66.3 1.02zm1.44-3.3c-.3.42-.84.6-1.26.3-3.24-1.98-8.16-2.58-11.94-1.38-.48.12-1.02-.12-1.14-.6-.12-.48.12-1.02.6-1.14 4.38-1.32 9.78-.66 13.5 1.62.36.18.54.78.24 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.3c-.6.18-1.2-.18-1.38-.72-.18-.6.18-1.2.72-1.38 4.26-1.26 11.28-1.02 15.72 1.62.54.3.72 1.02.42 1.56-.3.42-1.02.6-1.56.3z"/></svg>
+              Spotify
+            </a>
+          </li>
+          <li>
+            <a class="platforms__item" href="https://music.apple.com/mx/artist/blessed-extinction/1809702685" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.99 6.13c0-.73-.06-1.46-.24-2.17a4.8 4.8 0 0 0-1.15-2.13A4.96 4.96 0 0 0 19.88.4C19.15.27 18.4.22 17.66.2H6.34c-.6.02-1.2.05-1.8.13A5.1 5.1 0 0 0 2.2 1.2 4.82 4.82 0 0 0 .3 4.1C.15 4.7.09 5.33.03 5.95L0 6.35v11.3l.04.6c.05.85.18 1.69.53 2.47a4.86 4.86 0 0 0 3.12 2.77c.62.18 1.27.26 1.92.29.36.02.73.03 1.09.04h10.62c.55 0 1.1-.04 1.65-.1a5.1 5.1 0 0 0 2.28-.8 4.85 4.85 0 0 0 2.17-3.21c.12-.6.17-1.22.19-1.83l.01-.45V6.13zM17.27 13.6v3.31c0 .5-.08 1-.32 1.44-.37.7-.97 1.1-1.73 1.24-.43.08-.86.1-1.29.04a1.97 1.97 0 0 1-1.6-1.7 1.98 1.98 0 0 1 1.5-2.18c.37-.1.75-.15 1.12-.23.27-.06.47-.2.53-.48l.02-.2V8.7c0-.3-.13-.42-.42-.37-.4.07-.79.15-1.18.23l-4.94 1c-.21.04-.28.13-.3.34v7.95c0 .47-.06.93-.27 1.36-.36.72-.96 1.14-1.74 1.29a3 3 0 0 1-1.34.04 1.97 1.97 0 0 1-1.54-1.85 2 2 0 0 1 1.47-2.02c.4-.12.83-.18 1.25-.26.31-.07.53-.24.57-.57V6.55c0-.39.11-.62.5-.72.17-.04.35-.08.52-.11l7.06-1.43c.53-.1 1.06-.2 1.6-.3.24-.03.4.1.42.35v9.25z"/></svg>
+              Apple Music
+            </a>
+          </li>
+          <li>
+            <a class="platforms__item" href="https://music.youtube.com/playlist?list=OLAK5uy_nnMw1Wo_ns9KiGCXKrnx_9HjsG2vK_joU" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm0 19.104c-3.924 0-7.104-3.18-7.104-7.104S8.076 4.896 12 4.896s7.104 3.18 7.104 7.104-3.18 7.104-7.104 7.104zm0-13.332c-3.432 0-6.228 2.796-6.228 6.228S8.568 18.228 12 18.228s6.228-2.796 6.228-6.228S15.432 5.772 12 5.772zM9.684 15.54V8.46L15.816 12l-6.132 3.54z"/></svg>
+              YouTube Music
+            </a>
+          </li>
+          <li>
+            <a class="platforms__item" href="https://blessedextinction1.bandcamp.com/music" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M0 18.75l7.44-13.5H24l-7.44 13.5H0z"/></svg>
+              Bandcamp
+            </a>
+          </li>
+          <li>
+            <a class="platforms__item" href="https://listen.tidal.com/artist/56954557" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.012 3.992 8.008 7.996 4.004 3.992 0 7.996 4.004 12l4.004-4.004L12.012 12l-4.004 4.004 4.004 4.004 4.004-4.004L12.012 12l4.004-4.004-4.004-4.004zM16.042 7.996l3.979-3.979L24 7.996l-3.979 3.979z"/></svg>
+              Tidal
+            </a>
+          </li>
+          <li>
+            <a class="platforms__item" href="https://www.deezer.com/us/artist/10689391" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="0" y="17" width="4.4" height="3"/><rect x="4.9" y="17" width="4.4" height="3"/><rect x="9.8" y="17" width="4.4" height="3"/><rect x="14.7" y="17" width="4.4" height="3"/><rect x="19.6" y="17" width="4.4" height="3"/><rect x="4.9" y="13.2" width="4.4" height="3"/><rect x="9.8" y="13.2" width="4.4" height="3"/><rect x="14.7" y="13.2" width="4.4" height="3"/><rect x="19.6" y="13.2" width="4.4" height="3"/><rect x="9.8" y="9.4" width="4.4" height="3"/><rect x="19.6" y="9.4" width="4.4" height="3"/><rect x="19.6" y="5.6" width="4.4" height="3"/></svg>
+              Deezer
+            </a>
+          </li>
+          <li>
+            <a class="platforms__item" href="https://music.amazon.com/artists/B01K1IBAY0/blessed-extinction" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4v10.2A3.5 3.5 0 1 0 11 17V8l8-2v6.2A3.5 3.5 0 1 0 21 15V2z"/><path d="M1.5 20.5c6 3.2 14.5 3.2 21 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              Amazon Music
+            </a>
+          </li>
+          <li>
+            <a class="platforms__item" href="https://www.youtube.com/@BlessedExtinction" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31.2 31.2 0 0 0 0 12a31.2 31.2 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31.2 31.2 0 0 0 24 12a31.2 31.2 0 0 0-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>
+              YouTube
+            </a>
+          </li>
+        </ul>
+
+        <h3 class="platforms__label" data-i18n="platforms.social">Redes sociales</h3>
+        <ul class="platforms__grid platforms__grid--social">
+          <li>
+            <a class="platforms__item" href="https://instagram.com/blessed_extinction" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.72 3.72 0 0 1-1.38-.9 3.72 3.72 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.3-1.46.72-2.13 1.38A5.88 5.88 0 0 0 .63 4.14C.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.3.79.72 1.46 1.38 2.13a5.88 5.88 0 0 0 2.13 1.38c.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56a5.88 5.88 0 0 0 2.13-1.38 5.88 5.88 0 0 0 1.38-2.13c.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91a5.88 5.88 0 0 0-1.38-2.13A5.88 5.88 0 0 0 19.86.63C19.1.33 18.22.13 16.95.07 15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.85a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/></svg>
+              Instagram
+            </a>
+          </li>
+          <li>
+            <a class="platforms__item" href="https://www.facebook.com/blessedextinctionmusic" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg>
+              Facebook
+            </a>
+          </li>
+          <li>
+            <a class="platforms__item" href="https://linktr.ee/blessedextinction" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 6.6 17.4 2.6l2.3 2.3-4.1 3.9h5.8v3.2h-5.8l4.1 4-2.3 2.3-5.4-5.5-5.4 5.5-2.3-2.3 4.1-4H2.6V8.8h5.8L4.3 4.9l2.3-2.3 3.9 4V.9h3v5.7zm-3 8.9h3V23h-3z"/></svg>
+              Linktree
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== BIO ===== -->
+    <section class="section bio" id="banda">
+      <div class="section__inner">
+        <h2 class="section__title" data-i18n="bio.title">La Banda</h2>
+        <!-- Foto panorámica y debajo la alineación en el mismo orden de la foto;
+             al pasar el cursor por un nombre, una luz señala a esa persona -->
+        <div class="bio__band">
+          <figure class="bio__photo">
+            <button class="bio__zoom" id="bioZoom" type="button" aria-label="Ver la foto completa" data-i18n-attr="aria-label:bio.photoZoom">
+              <img src="img/fotoBanda.jpg" alt="Blessed Extinction, de izquierda a derecha: Jhon Hernández, William Ruiz, Julio Sarmiento, Carlos Sarmiento y Julián Franco" data-i18n-attr="alt:bio.photoAlt" width="1280" height="960" loading="lazy">
+            </button>
+            <figcaption><small data-i18n="bio.photoCaption">Bogotá · Desde 2013</small></figcaption>
+          </figure>
+          <ul class="bio__lineup" aria-label="Integrantes" data-i18n-attr="aria-label:bio.members">
+            <li><strong>Jhon Hernández</strong><span data-i18n="role.guitar">Guitarra</span></li>
+            <li><strong>William Ruiz</strong><span data-i18n="role.drums">Batería</span></li>
+            <li><strong>Julio Sarmiento</strong><span data-i18n="role.guitar">Guitarra</span></li>
+            <li><strong>Carlos Sarmiento</strong><span data-i18n="role.bass">Bajo</span></li>
+            <li><strong>Julián Franco</strong><span data-i18n="role.vocals">Voz</span></li>
+          </ul>
+        </div>
+
+        <div class="bio__text">
+          <p data-i18n="bio.p1">Blessed Extinction es una agrupación de metal colombiano que se consolida en la ciudad de Bogotá a finales del año 2013, bajo la influencia musical del Death, Thrash y New York Hardcore. La banda nace tras la disolución de diferentes proyectos que tenían sus integrantes, con el objetivo principal de formar un grupo sólido y consistente, que pueda dejar huella en la historia del metal nacional como otras bandas importantes de nuestro país.</p>
+          <div>
+            <p data-i18n="bio.p2">Un mundo apocalíptico y el declive social son algunos de los temas principales que trata la banda en sus letras, así como vivencias y pensamientos personales, acompañados de fuertes riffs de guitarra y agresivos rasgados de voz.</p>
+            <p data-i18n-html="bio.p3">Tras el EP <em>Venganza Natural</em> y el single <em>Siembra de Cadáveres</em>, la banda presenta su nuevo single <em>Incorruptible Cadavérico</em>.</p>
+          </div>
+        </div>
+
+        <dialog class="lightbox" id="lightbox" aria-label="Foto de la banda" data-i18n-attr="aria-label:bio.photoDialog">
+          <button class="lightbox__close" id="lightboxClose" type="button" aria-label="Cerrar" data-i18n-attr="aria-label:bio.photoClose">&times;</button>
+          <img src="img/fotoBanda.jpg" alt="" width="1280" height="960" loading="lazy">
+        </dialog>
+      </div>
+    </section>
+
+    <!-- ===== TOUR ===== -->
+    <section class="section section--dark tour" id="tour">
+      <div class="section__inner">
+        <h2 class="section__title" data-i18n="tour.title">Próximos Shows</h2>
+
+        <!-- Sin fechas por ahora. Para anunciar un show, reemplazar este bloque por:
+        <ul class="tour__list">
+          <li class="tour__item">
+            <time class="tour__date" datetime="AAAA-MM-DD"><span class="day">DD</span><span class="month">MES</span></time>
+            <span class="tour__city">Ciudad</span>
+            <span class="tour__venue">Lugar</span>
+            <a class="btn btn--primary btn--sm tour__cta" href="URL-TICKETS" target="_blank" rel="noopener">Tickets</a>
+          </li>
+        </ul>
+        -->
+        <div class="tour__empty">
+          <p class="tour__empty-title" data-i18n="tour.emptyTitle">Sin fechas anunciadas por el momento</p>
+          <p data-i18n="tour.emptyText">Muy pronto anunciaremos nuevas fechas. Síguenos en redes para enterarte primero.</p>
+          <div class="tour__empty-ctas">
+            <a class="btn btn--ghost btn--sm" href="https://instagram.com/blessed_extinction" target="_blank" rel="noopener">Instagram</a>
+            <a class="btn btn--ghost btn--sm" href="https://www.facebook.com/blessedextinctionmusic" target="_blank" rel="noopener">Facebook</a>
+          </div>
+          <button class="tour__game" type="button" data-game-open data-i18n="game.teaser">Mientras tanto… ¿puedes detener el péndulo? ⏳</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer" id="contacto">
+    <img class="footer__logo" src="img/logoverde-web.png" alt="Blessed Extinction">
+
+    <div class="footer__contact">
+      <span class="footer__label" data-i18n="footer.contact">Contacto</span>
+      <p data-i18n="footer.contactText">Booking, prensa y colaboraciones:</p>
+      <a class="footer__mail" href="mailto:jhonblessedextinction@gmail.com">jhonblessedextinction@gmail.com</a>
+    </div>
+
+    <div class="footer__social">
+        <a href="https://instagram.com/blessed_extinction" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.15 3.23-1.66 4.77-4.92 4.92-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85C2.38 3.92 3.9 2.38 7.15 2.23 8.42 2.17 8.8 2.16 12 2.16zM12 0C8.74 0 8.33.01 7.05.07 2.7.27.27 2.69.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.2 4.36 2.62 6.78 6.98 6.98C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c4.35-.2 6.78-2.62 6.98-6.98.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.2-4.35-2.62-6.78-6.98-6.98C15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.85a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/></svg></a>
+        <a href="https://www.facebook.com/blessedextinctionmusic" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg></a>
+        <a href="https://www.youtube.com/@BlessedExtinction" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31.2 31.2 0 0 0 0 12a31.2 31.2 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31.2 31.2 0 0 0 24 12a31.2 31.2 0 0 0-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg></a>
+        <a href="https://open.spotify.com/artist/5pcjzTYxRRCxWtVyOKMhJ0" target="_blank" rel="noopener" aria-label="Spotify"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.52 17.34c-.24.36-.66.48-1.02.24-2.82-1.74-6.36-2.1-10.56-1.14-.42.12-.78-.18-.9-.54-.12-.42.18-.78.54-.9 4.56-1.02 8.52-.6 11.64 1.32.42.18.48.66.3 1.02zm1.44-3.3c-.3.42-.84.6-1.26.3-3.24-1.98-8.16-2.58-11.94-1.38-.48.12-1.02-.12-1.14-.6-.12-.48.12-1.02.6-1.14 4.38-1.32 9.78-.66 13.5 1.62.36.18.54.78.24 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.3c-.6.18-1.2-.18-1.38-.72-.18-.6.18-1.2.72-1.38 4.26-1.26 11.28-1.02 15.72 1.62.54.3.72 1.02.42 1.56-.3.42-1.02.6-1.56.3z"/></svg></a>
+    </div>
+
+    <p class="footer__copy">&copy; <span id="year"></span> Blessed Extinction &middot; <span data-i18n="footer.tagline">Death Metal desde 2013 · Bogotá, Colombia</span></p>
+    <div class="footer__actions">
+      <button class="footer__replay" id="replayIntro" type="button" data-i18n="footer.replay">Repetir el Inicio &#8635;</button>
+      <button class="footer__replay" type="button" data-game-open data-i18n="footer.game">Minijuego &#8987;</button>
+    </div>
+  </footer>
+
+  <!-- ===== MINIJUEGO: El Péndulo ===== -->
+  <!-- Para cambiar los enlaces del final, ver GAME_LINKS en js/main.js -->
+  <dialog class="game" id="game" aria-labelledby="gameTitle">
+    <button class="game__close" id="gameClose" type="button" aria-label="Cerrar" data-i18n-attr="aria-label:game.close">&times;</button>
+
+    <div class="game__screen" data-screen="intro">
+      <span class="game__kicker" data-i18n="game.kicker">Minijuego</span>
+      <h2 class="game__title" id="gameTitle" data-i18n="game.title">El Péndulo</h2>
+      <p class="game__text" data-i18n="game.rules">Detén el péndulo dentro de la zona dorada. Cada acierto lo acelera. Tres fallos y quedas sepultado.</p>
+      <button class="btn btn--primary" id="gameStart" type="button" data-i18n="game.start">Jugar</button>
+      <p class="game__best"><span data-i18n="game.best">Récord</span>: <strong data-game-best>0</strong></p>
+    </div>
+
+    <div class="game__screen game__screen--play" data-screen="play" hidden>
+      <div class="game__hud">
+        <span class="game__score" data-game-score aria-live="polite">0</span>
+        <span class="game__lives" data-game-lives aria-label="Vidas"></span>
+      </div>
+      <div class="game__stage" id="gameStage">
+        <svg class="game__svg" viewBox="0 0 300 210" aria-hidden="true">
+          <path class="game__track" id="gameTrack"/>
+          <path class="game__zone" id="gameZone"/>
+          <g id="gameArm">
+            <line class="game__rod" x1="150" y1="16" x2="150" y2="176"/>
+            <circle class="game__bob" cx="150" cy="176" r="11"/>
+            <circle class="game__bob-core" cx="150" cy="176" r="4"/>
+          </g>
+          <circle class="game__pivot" cx="150" cy="16" r="4"/>
+        </svg>
+        <p class="game__feedback" data-game-feedback aria-live="assertive"></p>
+      </div>
+      <p class="game__hint" data-i18n="game.hint">Toca la pantalla o pulsa Espacio</p>
+    </div>
+
+    <div class="game__screen" data-screen="over" hidden>
+      <span class="game__kicker" data-i18n="game.overKicker">Sepultado</span>
+      <p class="game__final"><strong data-game-final>0</strong></p>
+      <p class="game__best"><span data-i18n="game.best">Récord</span>: <strong data-game-best>0</strong> <span class="game__new" data-game-new hidden data-i18n="game.newBest">¡Nuevo récord!</span></p>
+      <button class="btn btn--ghost btn--sm" id="gameAgain" type="button" data-i18n="game.again">Otra vez</button>
+      <div class="game__promo">
+        <p class="game__promo-text" data-i18n="game.promo">¿Sobreviviste? Ahora escucha lo que suena al otro lado.</p>
+        <div class="game__promo-ctas" id="gamePromo"></div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ===== CHAT con la banda (Telegram) ===== -->
+  <!-- Para activarlo, ver CHAT_API y TURNSTILE_SITEKEY en js/main.js -->
+  <button class="chat-fab" id="chatFab" type="button" aria-label="Escríbele a la banda" data-i18n-attr="aria-label:chat.open" aria-expanded="false" aria-controls="chatPanel" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H9l-4.3 3.4A.4.4 0 0 1 4 20.1V5a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 9h8M8 12.5h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    <span class="chat-fab__dot" id="chatDot" hidden></span>
+  </button>
+
+  <section class="chat" id="chatPanel" role="dialog" aria-labelledby="chatTitle" hidden>
+    <header class="chat__head">
+      <div>
+        <p class="chat__title" id="chatTitle" data-i18n="chat.title">Escríbele a la banda</p>
+        <p class="chat__sub" data-i18n="chat.sub">Respondemos desde Telegram</p>
+      </div>
+      <button class="chat__close" id="chatClose" type="button" aria-label="Cerrar chat" data-i18n-attr="aria-label:chat.close">&times;</button>
+    </header>
+    <div class="chat__log" id="chatLog" aria-live="polite">
+      <p class="chat__intro" data-i18n="chat.intro">¿Booking, merch o sólo saludar? Escríbenos y te responderá alguien de la banda. La conversación queda guardada en este navegador: puedes volver más tarde por la respuesta.</p>
+    </div>
+    <form class="chat__form" id="chatForm">
+      <div class="chat__captcha" id="chatCaptcha"></div>
+      <!-- Sólo para el primer mensaje: la banda ve el nombre en Telegram -->
+      <input class="chat__name" id="chatName" type="text" maxlength="40" autocomplete="given-name" placeholder="¿Cómo te llamas?" aria-label="Tu nombre" data-i18n-attr="placeholder:chat.namePlaceholder;aria-label:chat.name" hidden>
+      <div class="chat__row">
+        <textarea class="chat__input" id="chatInput" rows="1" maxlength="1000" required placeholder="Escribe tu mensaje…" aria-label="Mensaje" data-i18n-attr="placeholder:chat.placeholder;aria-label:chat.input"></textarea>
+        <button class="chat__send" id="chatSend" type="submit" aria-label="Enviar" data-i18n-attr="aria-label:chat.send">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.4 20.4 21 12 3.4 3.6 3.4 10l12.6 2-12.6 2z" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </form>
+    <p class="chat__note" data-i18n="chat.note">🔒 Conexión cifrada. No compartas contraseñas ni datos bancarios.</p>
+  </section>
+
+  <!-- ===== REPRODUCTOR FLOTANTE (Spotify): suena al entrar, desde el minuto 1:30 ===== -->
+  <!-- Se carga oculto desde el inicio para que esté listo cuando el usuario entre -->
+  <div class="now-playing is-offstage" id="nowPlaying" aria-hidden="true" inert>
+    <p class="now-playing__tap" data-i18n="np.tap">Pulsa ▶ para escuchar</p>
+    <div class="now-playing__spotify"><div id="npSpotify"></div></div>
+    <button class="now-playing__close" id="npClose" type="button" aria-label="Cerrar reproductor" data-i18n-attr="aria-label:np.close">&times;</button>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

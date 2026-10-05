@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <radialGradient id="g" cx="50%" cy="35%" r="70%">
+      <stop offset="0" stop-color="#3a0e09"/>
+      <stop offset="1" stop-color="#0d0a08"/>
+    </radialGradient>
+  </defs>
+  <rect width="64" height="64" rx="12" fill="url(#g)"/>
+  <rect x="1.5" y="1.5" width="61" height="61" rx="10.5" fill="none" stroke="#c9a24a" stroke-opacity=".55" stroke-width="1.5"/>
+  <!-- Reloj de arena de la intro (viewBox original 24×38) -->
+  <g transform="translate(16.4 7.3) scale(1.3)" color="#c9a24a">
+    <path d="M3 1h18M3 37h18M5 1c0 9 6 12 6 18S5 28 5 37M19 1c0 9-6 12-6 18s6 9 6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M7.2 8h9.6c-1 4-3.6 7-4.8 9.5C10.8 15 8.2 12 7.2 8z" fill="#f0d58a"/>
+    <line x1="12" y1="18" x2="12" y2="31" stroke="#f0d58a" stroke-width="1"/>
+    <path d="M6 36.2c.6-3.6 4-6 6-6.6 2 .6 5.4 3 6 6.6z" fill="#f0d58a"/>
+  </g>
+</svg>
