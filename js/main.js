@@ -479,30 +479,25 @@
   })();
 
   // ----- Canción al entrar: "Incorruptible Cadavérico" en Spotify -----
-  // El reproductor se crea oculto al cargar la página para que esté listo al entrar.
+  // El reproductor se crea oculto al cargar la página y aparece en pausa al entrar;
+  // la canción sólo suena si el visitante pulsa play.
   // Spotify sólo entrega la canción completa a visitantes con sesión iniciada; sin
   // sesión reproduce una vista previa corta, así que el salto a SONG_START_AT se hace sólo
   // cuando la pista dura más que eso (saltar más allá de la vista previa la detiene).
   const Music = (() => {
-    const SONG_START_AT = '0:30'; // minuto:segundo donde arranca la canción al entrar
+    const SONG_START_AT = '0:30'; // minuto:segundo donde arranca la canción al pulsar play
     const SONG_START = SONG_START_AT.split(':').reduce((acc, part) => acc * 60 + Number(part), 0); // segundos
     const SPOTIFY_URI = 'spotify:track:3SSYo3fM6wHw28QY71RTwC';
     const box = document.getElementById('nowPlaying');
     let controller = null;
-    let wantPlay = false;
     let playing = false;
     let seeked = false;
-    let fullTrack = false;   // true si Spotify entrega la canción completa (sesión iniciada)
-    let startedOnce = false;
 
     window.onSpotifyIframeApiReady = (api) => {
       api.createController(document.getElementById('npSpotify'), { uri: SPOTIFY_URI, width: '100%', height: 80 }, (c) => {
         controller = c;
-        c.addListener('ready', () => { if (wantPlay) c.play(); });
         c.addListener('playback_update', ({ data }) => {
           playing = !data.isPaused;
-          if (data.duration) fullTrack = data.duration > SONG_START * 1000;
-          if (playing) box.classList.remove('needs-tap');
           if (playing && !data.isBuffering && !seeked && data.duration > SONG_START * 1000) {
             seeked = true;
             if (data.position < (SONG_START - 2) * 1000) c.seek(SONG_START);
@@ -522,29 +517,19 @@
       box.setAttribute('aria-hidden', String(!visible));
     };
 
-    const start = () => {
-      wantPlay = true;
-      setVisible(true);
-      // Al repetir la intro, la canción vuelve a SONG_START_AT (o al inicio de la vista previa)
-      if (controller && startedOnce) controller.seek(fullTrack ? SONG_START : 0);
-      startedOnce = true;
-      if (controller) controller.play();
-      // Si el navegador bloqueó la reproducción automática, invitar a pulsar play
-      setTimeout(() => { if (wantPlay && !playing) box.classList.add('needs-tap'); }, 4000);
-    };
+    // Muestra el reproductor en pausa: el visitante decide si le da play
+    const show = () => setVisible(true);
 
     const pause = () => {
-      wantPlay = false;
       if (controller && playing) controller.pause();
     };
 
     document.getElementById('npClose').addEventListener('click', () => {
       pause();
-      box.classList.remove('needs-tap');
       setVisible(false);
     });
 
-    return { start, pause };
+    return { show, pause };
   })();
 
   // ----- Splash screen (Incorruptible Cadavérico) -----
@@ -729,8 +714,8 @@
     clearTimeout(timer);
     Ultratumba.stop(0.4);
     closeSplash();
-    // Pausa de silencio antes de la canción para que no se monten los sonidos
-    if (withSound) setTimeout(Music.start, gap);
+    // El reproductor aparece en pausa tras la intro; la canción no suena sola
+    setTimeout(Music.show, gap);
   };
 
   // El clic en "Entrar" es el gesto que permite al navegador reproducir sonido
