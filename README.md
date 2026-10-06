@@ -45,6 +45,7 @@ Sección `#tienda` entre «La Banda» y «Tour», con la camiseta (tres colores 
 - **Precio:** el texto de `.product__price`.
 - **Agotado:** `data-soldout` en el `<article>` (todo el producto) o en un botón de color o talla. La foto se apaga con el sello «Sold Out» y el botón «Pedir por correo» se cambia por «🔔 Quiero que vuelva».
 - **Pedir por correo:** abre el correo del visitante dirigido a `CONTACT_MAIL` (`js/main.js`), con el asunto y el pedido escritos (producto · color · talla). La talla es obligatoria si el producto tiene tallas. Debajo se muestra la dirección, por si el visitante no tiene programa de correo configurado.
+- **Aviso de pedido en Telegram:** al pulsar «Pedir por correo» o «Avísame por correo», la página avisa al Worker (`POST /intent`) y llega un mensaje al grupo con el producto, el color, la talla y el idioma. En el grupo, `/pedidos` muestra el ranking. Ver «Avisos de pedidos por correo» más abajo.
 - **Votos:** van al Worker (`POST /vote`), que los guarda en D1 y avisa al grupo de Telegram. En el grupo, `/votos` muestra el ranking con el reparto por talla. Un voto por producto y navegador. Tras votar, el fan puede pedir por correo que le avisen cuando vuelva.
 - **Mockup de la camiseta:** silueta SVG con el arte encima. La tela (`#1d1917`) es apenas más clara que el fondo de los JPG (`rgb(17,13,12)`) y el arte usa `mix-blend-mode: lighten`, así que el recuadro negro desaparece. Un arte nuevo necesita ese mismo fondo (o más oscuro).
 - **Colores del hoodie:** sólo hay foto en verde. El rojo y el azul se simulan girando el tono de esa foto (`data-hue` en grados y `data-sat` para avivar el color). Los negros y grises no cambian. Si hay fotos reales, cambia `data-hue` por `data-img="img/merch/hoodie-rojo.jpg"` en el botón del color.
@@ -103,7 +104,40 @@ Con wrangler: `npx wrangler d1 execute blessed-chat --remote --command "SELECT i
 
 Los votos se borran solos a los 180 días.
 
-**6. Si cambias el Worker** (`chat-worker-blessed/src/index.js`), publícalo con `npm run deploy` desde `chat-worker-blessed/`. La tabla `votes` ya existe: no hay que volver a ejecutar `npm run db:votes`.
+**6. Si cambias el Worker** (`chat-worker-blessed/src/index.js`), publícalo con `npm run deploy` desde `chat-worker-blessed/`. Las tablas `votes` e `intents` ya existen: no hay que volver a ejecutar `npm run db:votes` ni `npm run db:intents`.
+
+### Avisos de pedidos por correo
+
+Publicado en Cloudflare desde el 4 de octubre de 2026 (tabla `intents` creada en producción). Funciona en cuanto la página esté subida a GitHub Pages.
+
+**1. Al pulsar «Pedir por correo»** llega al grupo de Telegram:
+
+```
+🛒 Pedido de merch por correo
+Hoodie con cremallera · Logo rojo · Talla M
+hoodie/logo-rojo · talla M · ES
+
+Abrió su correo para hacer el pedido. Revisa Gmail en unos minutos: si no llega, no lo envió.
+Pedidos de hoy: 1 · /pedidos → ranking
+```
+
+Al pulsar «Avísame por correo» (después de votar por un producto agotado) llega con el encabezado `🔔 Piden aviso cuando vuelva`.
+
+**Es un aviso de intención:** sale en el momento del clic, antes de que el fan escriba. El pedido real es el correo que llega a Gmail; si no aparece en unos minutos, el fan cerró su correo sin enviarlo. Si el visitante no tiene programa de correo configurado, el aviso igual llega, y debajo del botón la página le muestra la dirección para que escriba.
+
+**2. Ranking:** escribe `/pedidos` en el grupo. Muestra los últimos 30 días, separados en «🛒 Pedidos» y «🔔 Piden aviso», con el reparto por talla. Sirve para ver qué producto y qué talla interesan más, aunque no todos terminen en correo.
+
+**3. Protecciones:**
+- Si el mismo navegador pulsa otra vez el mismo producto, color y talla en menos de 15 minutos (por ejemplo, un doble clic), no se repite el aviso.
+- Máximo 10 avisos por IP y hora.
+- El Worker sólo acepta productos, colores y tallas válidos. El nombre legible sólo puede llevar letras, números, espacios, `·` y guiones: si trae otra cosa (un enlace, por ejemplo), el grupo ve el identificador del producto en su lugar.
+- El historial se borra solo a los 30 días.
+
+**4. Consultar en la base:**
+
+```sql
+SELECT kind, item, size, datetime(ts / 1000, 'unixepoch') AS fecha FROM intents ORDER BY ts DESC;
+```
 
 ## Chat con la banda (Telegram)
 
